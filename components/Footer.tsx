@@ -28,7 +28,7 @@ const Footer: React.FC<FooterProps> = ({ navigateTo, logoUrl, onSelectLabel, con
         <div className="flex-1 space-y-8">
           <div className="flex items-center gap-3">
             {config.footerLogoUrl ? (
-              <img src={config.footerLogoUrl} alt="Footer Logo" className="h-12 w-auto object-contain" />
+              <img src={config.footerLogoUrl} alt="Footer Logo" className="object-contain" style={{ width: config.footerLogoWidth || 'auto', height: config.footerLogoHeight || 60 }} />
             ) : (
               <>
                 <div className="w-4 h-4 bg-yellow-400 rounded-full shadow-[0_0_15px_rgba(250,204,21,0.5)] animate-pulse"></div>

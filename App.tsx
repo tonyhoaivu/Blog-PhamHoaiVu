@@ -61,6 +61,10 @@ const App: React.FC = () => {
   const [siteConfig, setSiteConfig] = useState<SiteConfig>({
     logoUrl: null,
     footerLogoUrl: null,
+    logoWidth: 150,
+    logoHeight: 40,
+    footerLogoWidth: 200,
+    footerLogoHeight: 60,
     siteName: "PHẠM HOÀI VŨ Blog",
     adsenseScript: "",
     adsSidebar: "",
@@ -90,8 +94,11 @@ const App: React.FC = () => {
     const savedConfig = localStorage.getItem('phv_site_config');
     if (savedConfig) setSiteConfig(prev => ({ ...prev, ...JSON.parse(savedConfig) }));
     const savedPosts = localStorage.getItem('phv_posts');
-    if (savedPosts) setPosts(JSON.parse(savedPosts));
-    else setPosts(INITIAL_POSTS);
+    if (savedPosts) {
+        setPosts(JSON.parse(savedPosts));
+    } else {
+        setPosts(INITIAL_POSTS);
+    }
   }, []);
 
   useEffect(() => {
@@ -127,4 +134,102 @@ const App: React.FC = () => {
 
   const handleLabelFilter = (labelInput: string) => {
     if (labelInput === 'SPECIAL_CHARS') return navigateTo(Page.SPECIAL_CHARS);
-    if (labelInput === '
+    if (labelInput === 'CREATE_IMAGE') return navigateTo(Page.CREATE_IMAGE);
+    if (labelInput === 'CONTACT_PAGE') return navigateTo(Page.CONTACT);
+    if (labelInput === 'All') {
+      setActiveLabels(null);
+      setCurrentPage(Page.HOME);
+    } else {
+      setActiveLabels([labelInput]);
+      setCurrentPage(Page.HOME);
+    }
+  };
+
+  const handleUpdateConfig = (newConfig: Partial<SiteConfig>) => {
+    const updated = { ...siteConfig, ...newConfig };
+    setSiteConfig(updated);
+    localStorage.setItem('phv_site_config', JSON.stringify(updated));
+  };
+
+  const handleSavePost = (updatedPost: Post) => {
+    let newPosts;
+    const exists = posts.find(p => p.id === updatedPost.id);
+    if (exists) {
+      newPosts = posts.map(p => p.id === updatedPost.id ? updatedPost : p);
+    } else {
+      newPosts = [updatedPost, ...posts];
+    }
+    setPosts(newPosts);
+    localStorage.setItem('phv_posts', JSON.stringify(newPosts));
+    navigateTo(Page.ADMIN);
+  };
+
+  const handleDeletePost = (id: string) => {
+    if (window.confirm("Bạn có chắc muốn xóa bài viết này?")) {
+      const newPosts = posts.filter(p => p.id !== id);
+      setPosts(newPosts);
+      localStorage.setItem('phv_posts', JSON.stringify(newPosts));
+    }
+  };
+
+  const filteredPosts = activeLabels 
+    ? posts.filter(p => p.labels.some(l => activeLabels.includes(l)))
+    : posts;
+
+  return (
+    <div className="min-h-screen flex flex-col bg-sky-50 text-slate-800 transition-colors duration-300">
+      <Header 
+        isDarkMode={false}
+        toggleDarkMode={() => {}}
+        navigateTo={navigateTo} 
+        currentPage={currentPage}
+        currentUser={currentUser}
+        onLogout={() => { setCurrentUser(null); localStorage.removeItem('phv_session'); navigateTo(Page.HOME); }}
+        logoUrl={siteConfig.logoUrl}
+        labels={Array.from(new Set(posts.flatMap(p => p.labels)))}
+        onSelectLabel={handleLabelFilter}
+        config={siteConfig}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+      />
+      
+      <main className="flex-grow container mx-auto px-4 md:px-6 py-8 max-w-7xl relative">
+        {currentPage === Page.LOGIN && (
+          <LoginPage 
+            onLogin={(u) => { 
+              setCurrentUser(u); 
+              localStorage.setItem('phv_session', JSON.stringify(u)); 
+              navigateTo(Page.ADMIN); 
+            }} 
+            navigateTo={navigateTo} 
+          />
+        )}
+        {currentPage === Page.HOME && (
+          <HomePage 
+            posts={filteredPosts} 
+            navigateTo={navigateTo} 
+            currentUser={currentUser} 
+            onLogin={(u) => { setCurrentUser(u); localStorage.setItem('phv_session', JSON.stringify(u)); }} 
+            onLogout={() => { setCurrentUser(null); localStorage.removeItem('phv_session'); }} 
+            config={siteConfig}
+            activeLabel={activeLabels?.join(', ')}
+            onClearFilter={() => setActiveLabels(null)}
+            sidebarOpen={sidebarOpen}
+          />
+        )}
+        {currentPage === Page.POST && posts.find(p => p.id === currentPostId) && <PostPage post={posts.find(p => p.id === currentPostId)!} allPosts={posts} navigateTo={navigateTo} currentUser={currentUser} onLogin={() => {}} onLogout={() => {}} config={siteConfig} sidebarOpen={sidebarOpen} />}
+        {currentPage === Page.ADMIN && <AdminDashboard posts={posts} navigateTo={navigateTo} onDelete={handleDeletePost} onLogout={() => {}} />}
+        {currentPage === Page.EDITOR && <EditorPage post={posts.find(p => p.id === currentPostId) || null} onSave={handleSavePost} onCancel={() => navigateTo(Page.ADMIN)} />}
+        {currentPage === Page.SETTINGS && <SettingsPage config={siteConfig} onUpdate={handleUpdateConfig} />}
+        {currentPage === Page.SPECIAL_CHARS && <SpecialChars />}
+        {currentPage === Page.CREATE_IMAGE && <CreateImage />}
+        {(currentPage === Page.ABOUT || currentPage === Page.CONTACT) && <StaticPages type={currentPage} />}
+      </main>
+
+      <Footer config={siteConfig} navigateTo={navigateTo} currentUser={currentUser} logoUrl={siteConfig.logoUrl} onSelectLabel={handleLabelFilter} />
+      <FloatingButtons />
+    </div>
+  );
+};
+
+export default App;

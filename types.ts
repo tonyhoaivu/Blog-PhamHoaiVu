@@ -33,7 +33,7 @@ export interface User {
 export interface MenuItem {
   id: string;
   label: string;
-  icon?: string; // Emoji hoặc mã SVG
+  icon?: string; // Emoji, mã SVG, hoặc Base64
   targetLabel?: string;
   isDropdown?: boolean;
   subItems?: { label: string; targetLabel: string }[];
@@ -42,6 +42,10 @@ export interface MenuItem {
 export interface SiteConfig {
   logoUrl: string | null;
   footerLogoUrl: string | null;
+  logoWidth?: number;
+  logoHeight?: number;
+  footerLogoWidth?: number;
+  footerLogoHeight?: number;
   siteName: string;
   // Ads slots
   adsenseScript: string;
@@ -66,7 +70,7 @@ export interface SiteConfig {
   menuTextColor?: string;
   footerBgColor?: string;
   sidebarBgColor?: string;
-  accentColor?: string; // Mặc định là màu cam theo mẫu mới
+  accentColor?: string; 
   menuActiveBorderColor?: string;
 }
 

@@ -30,6 +30,18 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ config, onUpdate }) => {
     }
   };
 
+  const handleMenuIconUpload = (e: React.ChangeEvent<HTMLInputElement>, menuId: string) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result as string;
+        updateMenuItem(menuId, 'icon', base64);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const addMenuItem = () => {
     const newItem: MenuItem = {
       id: Date.now().toString(),
@@ -90,16 +102,16 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ config, onUpdate }) => {
   return (
     <div className="max-w-6xl mx-auto py-10 px-4 animate-in fade-in duration-700">
       <div className="bg-white rounded-[2rem] shadow-2xl border border-gray-100 overflow-hidden">
-        <div className="bg-[#1a1a1a] p-10 text-white flex flex-col md:flex-row justify-between items-center gap-6 border-b-4 border-orange-600">
+        <div className="bg-sky-600 p-10 text-white flex flex-col md:flex-row justify-between items-center gap-6 border-b-4 border-sky-800">
           <div>
             <h2 className="text-3xl font-black uppercase tracking-tighter">QUẢN TRỊ BLOG</h2>
             <p className="opacity-80 text-[10px] font-black uppercase tracking-[0.3em] mt-2">Hệ thống tùy biến Menu & Giao diện</p>
           </div>
           <div className="flex flex-wrap justify-center gap-2">
-             <button onClick={() => setActiveTab('general')} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'general' ? 'bg-orange-600 text-white' : 'bg-white/10 hover:bg-white/20'}`}>Cơ bản</button>
-             <button onClick={() => setActiveTab('layout')} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'layout' ? 'bg-orange-600 text-white' : 'bg-white/10 hover:bg-white/20'}`}>Bố cục & Menu</button>
-             <button onClick={() => setActiveTab('custom')} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'custom' ? 'bg-orange-600 text-white' : 'bg-white/10 hover:bg-white/20'}`}>Trang trí</button>
-             <button onClick={() => setActiveTab('ads')} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'ads' ? 'bg-orange-600 text-white' : 'bg-white/10 hover:bg-white/20'}`}>Quảng cáo</button>
+             <button onClick={() => setActiveTab('general')} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'general' ? 'bg-white text-sky-600' : 'bg-sky-700/50 hover:bg-sky-700'}`}>Cơ bản</button>
+             <button onClick={() => setActiveTab('layout')} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'layout' ? 'bg-white text-sky-600' : 'bg-sky-700/50 hover:bg-sky-700'}`}>Bố cục & Menu</button>
+             <button onClick={() => setActiveTab('custom')} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'custom' ? 'bg-white text-sky-600' : 'bg-sky-700/50 hover:bg-sky-700'}`}>Trang trí</button>
+             <button onClick={() => setActiveTab('ads')} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'ads' ? 'bg-white text-sky-600' : 'bg-sky-700/50 hover:bg-sky-700'}`}>Quảng cáo</button>
           </div>
         </div>
 
@@ -107,54 +119,102 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ config, onUpdate }) => {
           {activeTab === 'general' && (
             <div className="space-y-10 animate-in slide-in-from-left-4 duration-300">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Home Logo Upload */}
-                <div className="space-y-4">
-                  <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">LOGO TRANG CHỦ (HEADER)</h4>
-                  <div className="relative group aspect-video bg-gray-50 border-2 border-dashed border-gray-200 rounded-[2rem] flex flex-col items-center justify-center overflow-hidden transition-all hover:border-orange-500">
+                <div className="space-y-4 bg-sky-50/30 p-6 rounded-3xl border border-sky-100">
+                  <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">LOGO TRANG CHỦ (HEADER)</h4>
+                  <div className="relative group aspect-video bg-white border-2 border-dashed border-sky-200 rounded-[2rem] flex flex-col items-center justify-center overflow-hidden transition-all hover:border-sky-500 shadow-sm">
                     {localConfig.logoUrl ? (
-                      <img src={localConfig.logoUrl} alt="Logo Preview" className="max-h-full object-contain p-4" />
+                      <img 
+                        src={localConfig.logoUrl} 
+                        alt="Logo Preview" 
+                        className="object-contain p-4" 
+                        style={{ height: localConfig.logoHeight || 40, width: localConfig.logoWidth || 'auto', maxWidth: '100%' }} 
+                      />
                     ) : (
                       <div className="text-center p-6">
-                        <svg className="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Kéo thả hoặc Click để chọn ảnh</p>
+                        <svg className="w-10 h-10 text-sky-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        <p className="text-[10px] font-black text-sky-400 uppercase tracking-widest">TẢI LOGO LÊN</p>
                       </div>
                     )}
                     <input type="file" onChange={(e) => handleLogoUpload(e, 'logoUrl')} className="absolute inset-0 opacity-0 cursor-pointer" />
-                    {localConfig.logoUrl && (
-                      <button onClick={() => setLocalConfig({...localConfig, logoUrl: null})} className="absolute top-4 right-4 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
-                    )}
                   </div>
-                  <p className="text-[9px] text-gray-400 font-bold italic text-center">Hệ thống hỗ trợ mọi kích thước và dung lượng tệp tin.</p>
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Rộng (px)</label>
+                      <input 
+                        type="number" 
+                        min="20" 
+                        max="800"
+                        value={localConfig.logoWidth || 150} 
+                        onChange={e => setLocalConfig({...localConfig, logoWidth: Number(e.target.value)})} 
+                        className="w-full px-4 py-2 bg-white rounded-xl outline-none border border-sky-100 font-bold text-xs shadow-inner" 
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Cao (px)</label>
+                      <input 
+                        type="number" 
+                        min="10" 
+                        max="200"
+                        value={localConfig.logoHeight || 40} 
+                        onChange={e => setLocalConfig({...localConfig, logoHeight: Number(e.target.value)})} 
+                        className="w-full px-4 py-2 bg-white rounded-xl outline-none border border-sky-100 font-bold text-xs shadow-inner" 
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                {/* Footer Logo Upload */}
-                <div className="space-y-4">
-                  <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">LOGO CHÂN TRANG (FOOTER)</h4>
-                  <div className="relative group aspect-video bg-gray-50 border-2 border-dashed border-gray-200 rounded-[2rem] flex flex-col items-center justify-center overflow-hidden transition-all hover:border-orange-500">
+                <div className="space-y-4 bg-sky-50/30 p-6 rounded-3xl border border-sky-100">
+                  <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">LOGO CHÂN TRANG (FOOTER)</h4>
+                  <div className="relative group aspect-video bg-white border-2 border-dashed border-sky-200 rounded-[2rem] flex flex-col items-center justify-center overflow-hidden transition-all hover:border-sky-500 shadow-sm">
                     {localConfig.footerLogoUrl ? (
-                      <img src={localConfig.footerLogoUrl} alt="Footer Logo Preview" className="max-h-full object-contain p-4" />
+                      <img 
+                        src={localConfig.footerLogoUrl} 
+                        alt="Footer Logo Preview" 
+                        className="object-contain p-4" 
+                        style={{ height: localConfig.footerLogoHeight || 60, width: localConfig.footerLogoWidth || 'auto', maxWidth: '100%' }} 
+                      />
                     ) : (
                       <div className="text-center p-6">
-                        <svg className="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Kéo thả hoặc Click để chọn ảnh</p>
+                        <svg className="w-10 h-10 text-sky-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        <p className="text-[10px] font-black text-sky-400 uppercase tracking-widest">TẢI LOGO LÊN</p>
                       </div>
                     )}
                     <input type="file" onChange={(e) => handleLogoUpload(e, 'footerLogoUrl')} className="absolute inset-0 opacity-0 cursor-pointer" />
-                    {localConfig.footerLogoUrl && (
-                      <button onClick={() => setLocalConfig({...localConfig, footerLogoUrl: null})} className="absolute top-4 right-4 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
-                    )}
                   </div>
-                  <p className="text-[9px] text-gray-400 font-bold italic text-center">Tùy biến thương hiệu cho khu vực chân trang blog.</p>
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Rộng (px)</label>
+                      <input 
+                        type="number" 
+                        min="20" 
+                        max="800"
+                        value={localConfig.footerLogoWidth || 200} 
+                        onChange={e => setLocalConfig({...localConfig, footerLogoWidth: Number(e.target.value)})} 
+                        className="w-full px-4 py-2 bg-white rounded-xl outline-none border border-sky-100 font-bold text-xs shadow-inner" 
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Cao (px)</label>
+                      <input 
+                        type="number" 
+                        min="10" 
+                        max="200"
+                        value={localConfig.footerLogoHeight || 60} 
+                        onChange={e => setLocalConfig({...localConfig, footerLogoHeight: Number(e.target.value)})} 
+                        className="w-full px-4 py-2 bg-white rounded-xl outline-none border border-sky-100 font-bold text-xs shadow-inner" 
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 
               <div className="space-y-4 pt-4">
-                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">TÊN WEBSITE / THƯƠNG HIỆU</label>
+                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">TÊN WEBSITE / THƯƠNG HIỆU</label>
                  <input 
                   type="text" 
                   value={localConfig.siteName} 
                   onChange={e => setLocalConfig({...localConfig, siteName: e.target.value})} 
-                  className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-orange-500 outline-none rounded-2xl font-black text-xl shadow-inner" 
+                  className="w-full px-6 py-4 bg-sky-50 border-2 border-transparent focus:border-sky-500 outline-none rounded-2xl font-black text-xl shadow-inner" 
                  />
               </div>
             </div>
@@ -162,55 +222,74 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ config, onUpdate }) => {
 
           {activeTab === 'layout' && (
             <div className="space-y-10 animate-in slide-in-from-left-4 duration-300">
-              <div className="flex justify-between items-center border-b pb-4">
-                <h3 className="text-sm font-black uppercase tracking-widest text-orange-600 flex items-center gap-2">
+              <div className="flex justify-between items-center border-b border-sky-100 pb-4">
+                <h3 className="text-sm font-black uppercase tracking-widest text-sky-600 flex items-center gap-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 6h16M4 12h16M4 18h16" /></svg>
                   HỆ THỐNG MENU TÙY BIẾN
                 </h3>
-                <button onClick={addMenuItem} className="text-[10px] font-black bg-orange-600 text-white px-5 py-2.5 rounded-xl hover:bg-orange-700 transition-all shadow-lg shadow-orange-600/20">+ THÊM MENU MỚI</button>
+                <button onClick={addMenuItem} className="text-[10px] font-black bg-sky-600 text-white px-5 py-2.5 rounded-xl hover:bg-sky-700 transition-all shadow-lg shadow-sky-600/20">+ THÊM MENU MỚI</button>
               </div>
 
               <div className="grid grid-cols-1 gap-6">
                 {localConfig.menuItems.map(item => (
-                  <div key={item.id} className="p-6 bg-gray-50 border border-gray-200 rounded-3xl relative group">
-                    <button onClick={() => removeMenuItem(item.id)} className="absolute -top-3 -right-3 w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-all">✕</button>
+                  <div key={item.id} className="p-6 bg-white border border-sky-100 rounded-3xl relative group shadow-sm">
+                    <button onClick={() => removeMenuItem(item.id)} className="absolute -top-3 -right-3 w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-all z-10">✕</button>
                     
                     <div className="grid grid-cols-1 md:grid-cols-6 gap-6 items-end">
                       <div className="md:col-span-1">
-                        <label className="text-[9px] font-black uppercase text-gray-400 block mb-1">Icon</label>
-                        <input type="text" value={item.icon || ''} onChange={e => updateMenuItem(item.id, 'icon', e.target.value)} className="w-full px-4 py-3 rounded-xl border-2 border-white bg-white shadow-sm text-center text-xl" placeholder="🏠" />
+                        <label className="text-[9px] font-black uppercase text-slate-400 block mb-1">Biểu tượng (HTML/Emoji)</label>
+                        <div className="relative group/icon">
+                          <input 
+                            type="text" 
+                            value={item.icon || ''} 
+                            onChange={e => updateMenuItem(item.id, 'icon', e.target.value)} 
+                            placeholder="🏠 hoặc <i...>"
+                            className="w-full px-4 py-3 rounded-xl border border-sky-100 bg-sky-50/30 text-[10px] font-bold outline-none focus:border-sky-400 transition-all h-12" 
+                          />
+                          <div className="mt-2 flex gap-2">
+                             <label className="flex-grow cursor-pointer bg-white border border-sky-100 rounded-lg py-1 text-center hover:bg-sky-50 transition-all shadow-sm">
+                               <span className="text-[8px] font-black uppercase text-sky-600">UP ẢNH</span>
+                               <input type="file" className="hidden" onChange={(e) => handleMenuIconUpload(e, item.id)} />
+                             </label>
+                             {item.icon && item.icon.startsWith('data:image') && (
+                               <div className="w-6 h-6 bg-sky-50 border border-sky-100 rounded overflow-hidden p-1">
+                                 <img src={item.icon} className="w-full h-full object-contain" />
+                               </div>
+                             )}
+                          </div>
+                        </div>
                       </div>
                       <div className="md:col-span-2">
-                        <label className="text-[9px] font-black uppercase text-gray-400 block mb-1">Tên Menu</label>
-                        <input type="text" value={item.label} onChange={e => updateMenuItem(item.id, 'label', e.target.value)} className="w-full px-4 py-3 rounded-xl border-2 border-white bg-white shadow-sm text-[12px] font-black uppercase" />
+                        <label className="text-[9px] font-black uppercase text-slate-400 block mb-1">Tên Menu</label>
+                        <input type="text" value={item.label} onChange={e => updateMenuItem(item.id, 'label', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-sky-100 bg-sky-50/30 text-[12px] font-black uppercase h-12 outline-none focus:border-sky-400 transition-all" />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="text-[9px] font-black uppercase text-gray-400 block mb-1">Nhãn lọc (Dấu phẩy cho nhiều)</label>
-                        <input type="text" value={item.targetLabel || ''} onChange={e => updateMenuItem(item.id, 'targetLabel', e.target.value)} className="w-full px-4 py-3 rounded-xl border-2 border-white bg-white shadow-sm text-[11px] font-bold" placeholder="Windows, Phần mềm..." />
+                        <label className="text-[9px] font-black uppercase text-slate-400 block mb-1">Nhãn lọc / Mục tiêu</label>
+                        <input type="text" value={item.targetLabel || ''} onChange={e => updateMenuItem(item.id, 'targetLabel', e.target.value)} className="w-full px-4 py-3 rounded-xl border border-sky-100 bg-sky-50/30 text-[11px] font-bold h-12 outline-none focus:border-sky-400 transition-all" />
                       </div>
                       <div className="flex items-center gap-4 h-12">
-                        <label className="flex items-center gap-2 cursor-pointer group">
-                          <input type="checkbox" checked={item.isDropdown} onChange={e => updateMenuItem(item.id, 'isDropdown', e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500" />
-                          <span className="text-[10px] font-black uppercase text-gray-500">Dropdown</span>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input type="checkbox" checked={item.isDropdown} onChange={e => updateMenuItem(item.id, 'isDropdown', e.target.checked)} className="w-4 h-4 rounded border-sky-300 text-sky-600 focus:ring-sky-500" />
+                          <span className="text-[10px] font-black uppercase text-slate-500">Sub</span>
                         </label>
-                        <button onClick={() => addSubItem(item.id)} className="p-2 bg-orange-100 text-orange-600 rounded-lg hover:bg-orange-600 hover:text-white transition-all">
+                        <button onClick={() => addSubItem(item.id)} className="p-2 bg-sky-100 text-sky-600 rounded-lg hover:bg-sky-600 hover:text-white transition-all shadow-sm">
                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" /></svg>
                         </button>
                       </div>
                     </div>
 
                     {item.isDropdown && item.subItems && (
-                      <div className="mt-6 ml-10 space-y-3 border-l-2 border-orange-200 pl-6 animate-in slide-in-from-top-2">
+                      <div className="mt-6 ml-10 space-y-3 border-l-2 border-sky-200 pl-6 animate-in slide-in-from-top-2">
                         {item.subItems.map((sub, idx) => (
-                          <div key={idx} className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-2xl border border-gray-100 relative group/sub">
+                          <div key={idx} className="flex flex-col md:flex-row gap-4 bg-sky-50/30 p-4 rounded-2xl border border-sky-100 relative group/sub">
                             <button onClick={() => removeSubItem(item.id, idx)} className="absolute -top-2 -right-2 w-6 h-6 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xs opacity-0 group-hover/sub:opacity-100 transition-all">✕</button>
                             <div className="flex-grow">
-                              <label className="text-[8px] font-black uppercase text-gray-400">Tên Menu Con</label>
-                              <input type="text" value={sub.label} onChange={e => updateSubItem(item.id, idx, 'label', e.target.value)} className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-transparent focus:border-orange-500 text-[10px] font-bold" />
+                              <label className="text-[8px] font-black uppercase text-slate-400">Tên Menu Con</label>
+                              <input type="text" value={sub.label} onChange={e => updateSubItem(item.id, idx, 'label', e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white border border-sky-100 text-[10px] font-bold outline-none" />
                             </div>
                             <div className="flex-grow">
-                              <label className="text-[8px] font-black uppercase text-gray-400">Nhãn cần lọc</label>
-                              <input type="text" value={sub.targetLabel} onChange={e => updateSubItem(item.id, idx, 'targetLabel', e.target.value)} className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-transparent focus:border-orange-500 text-[10px] font-bold" />
+                              <label className="text-[8px] font-black uppercase text-slate-400">Nhãn lọc</label>
+                              <input type="text" value={sub.targetLabel} onChange={e => updateSubItem(item.id, idx, 'targetLabel', e.target.value)} className="w-full px-3 py-2 rounded-lg bg-white border border-sky-100 text-[10px] font-bold outline-none" />
                             </div>
                           </div>
                         ))}
@@ -224,37 +303,37 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ config, onUpdate }) => {
 
           {activeTab === 'custom' && (
             <div className="space-y-8 animate-in slide-in-from-left-4 duration-300">
-               <div className="bg-gray-50 p-8 rounded-[2rem] border border-gray-100 space-y-6">
-                  <h3 className="text-sm font-black uppercase tracking-widest text-orange-600 border-b pb-4">TÙY CHỈNH MÀU SẮC (THEO MẪU MỚI)</h3>
+               <div className="bg-sky-50 p-8 rounded-[2rem] border border-sky-100 space-y-6">
+                  <h3 className="text-sm font-black uppercase tracking-widest text-sky-600 border-b border-sky-200 pb-4">TÙY CHỈNH MÀU SẮC</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Màu nền Header (Tối)</label>
-                      <input type="color" value={localConfig.headerBgColor || '#1a1a1a'} onChange={e => setLocalConfig({...localConfig, headerBgColor: e.target.value})} className="w-full h-10 rounded-xl cursor-pointer" />
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Màu nền Header</label>
+                      <input type="color" value={localConfig.headerBgColor || '#ffffff'} onChange={e => setLocalConfig({...localConfig, headerBgColor: e.target.value})} className="w-full h-10 rounded-xl cursor-pointer" />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Màu điểm nhấn (Cam)</label>
-                      <input type="color" value={localConfig.accentColor || '#f97316'} onChange={e => setLocalConfig({...localConfig, accentColor: e.target.value})} className="w-full h-10 rounded-xl cursor-pointer" />
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Màu điểm nhấn (Sky)</label>
+                      <input type="color" value={localConfig.accentColor || '#0ea5e9'} onChange={e => setLocalConfig({...localConfig, accentColor: e.target.value})} className="w-full h-10 rounded-xl cursor-pointer" />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Màu chữ Menu</label>
-                      <input type="color" value={localConfig.menuTextColor || '#ffffff'} onChange={e => setLocalConfig({...localConfig, menuTextColor: e.target.value})} className="w-full h-10 rounded-xl cursor-pointer" />
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Màu nền Footer</label>
+                      <input type="color" value={localConfig.footerBgColor || '#0284c7'} onChange={e => setLocalConfig({...localConfig, footerBgColor: e.target.value})} className="w-full h-10 rounded-xl cursor-pointer" />
                     </div>
                   </div>
                </div>
 
                <div className="space-y-4">
-                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">MÃ TRANG TRÍ (CSS / JS)</label>
+                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">MÃ TRANG TRÍ (CSS / JS)</label>
                  <textarea 
                   value={localConfig.customCss} 
                   onChange={e => setLocalConfig({...localConfig, customCss: e.target.value})} 
-                  placeholder="/* Thêm CSS tuyết rơi, hoa đào... */"
-                  className="w-full h-48 p-6 bg-gray-50 rounded-3xl font-mono text-xs outline-none border border-transparent focus:border-orange-500 shadow-inner" 
+                  placeholder="/* Thêm CSS tùy biến tại đây */"
+                  className="w-full h-48 p-6 bg-sky-50 border border-sky-100 rounded-3xl font-mono text-xs outline-none focus:border-sky-500 shadow-inner" 
                  />
                  <textarea 
                   value={localConfig.customJs} 
                   onChange={e => setLocalConfig({...localConfig, customJs: e.target.value})} 
-                  placeholder="// Thêm Script hiệu ứng..."
-                  className="w-full h-48 p-6 bg-gray-50 rounded-3xl font-mono text-xs outline-none border border-transparent focus:border-orange-500 shadow-inner mt-4" 
+                  placeholder="// Thêm Script tùy biến tại đây"
+                  className="w-full h-48 p-6 bg-sky-50 border border-sky-100 rounded-3xl font-mono text-xs outline-none focus:border-sky-500 shadow-inner mt-4" 
                  />
                </div>
             </div>
@@ -262,44 +341,39 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ config, onUpdate }) => {
 
           {activeTab === 'ads' && (
             <div className="space-y-8 animate-in slide-in-from-left-4 duration-300">
-               <div className="bg-gray-50 p-8 rounded-[2rem] border border-gray-100">
-                 <h3 className="text-sm font-black uppercase tracking-widest text-orange-600 border-b pb-4 mb-6 flex items-center gap-2">
-                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                   QUẢN LÝ MÃ QUẢNG CÁO
-                 </h3>
+               <div className="bg-sky-50 p-8 rounded-[2rem] border border-sky-100">
+                 <h3 className="text-sm font-black uppercase tracking-widest text-sky-600 border-b border-sky-200 pb-4 mb-6">QUẢN LÝ MÃ QUẢNG CÁO</h3>
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Quảng cáo Đầu trang (Header Ad)</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Quảng cáo Header</label>
                       <textarea 
                         value={localConfig.adsHeader} 
                         onChange={e => setLocalConfig({...localConfig, adsHeader: e.target.value})} 
-                        placeholder="<!-- Dán mã AdSense hoặc HTML tại đây -->"
-                        className="w-full h-32 p-4 bg-white border border-gray-200 rounded-2xl font-mono text-[10px] outline-none focus:border-orange-500" 
+                        className="w-full h-32 p-4 bg-white border border-sky-200 rounded-2xl font-mono text-[10px] outline-none focus:border-sky-500" 
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Quảng cáo Sidebar</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Quảng cáo Sidebar</label>
                       <textarea 
                         value={localConfig.adsSidebar} 
                         onChange={e => setLocalConfig({...localConfig, adsSidebar: e.target.value})} 
-                        placeholder="<!-- Dán mã AdSense hoặc HTML tại đây -->"
-                        className="w-full h-32 p-4 bg-white border border-gray-200 rounded-2xl font-mono text-[10px] outline-none focus:border-orange-500" 
+                        className="w-full h-32 p-4 bg-white border border-sky-200 rounded-2xl font-mono text-[10px] outline-none focus:border-sky-500" 
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Quảng cáo Trang chủ (Dưới bài viết)</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Quảng cáo Trang chủ</label>
                       <textarea 
                         value={localConfig.adsHomePage} 
                         onChange={e => setLocalConfig({...localConfig, adsHomePage: e.target.value})} 
-                        className="w-full h-32 p-4 bg-white border border-gray-200 rounded-2xl font-mono text-[10px] outline-none focus:border-orange-500" 
+                        className="w-full h-32 p-4 bg-white border border-sky-200 rounded-2xl font-mono text-[10px] outline-none focus:border-sky-500" 
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Quảng cáo Bài viết (Dưới nội dung)</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Quảng cáo Dưới Bài Viết</label>
                       <textarea 
                         value={localConfig.adsBelowContent} 
                         onChange={e => setLocalConfig({...localConfig, adsBelowContent: e.target.value})} 
-                        className="w-full h-32 p-4 bg-white border border-gray-200 rounded-2xl font-mono text-[10px] outline-none focus:border-orange-500" 
+                        className="w-full h-32 p-4 bg-white border border-sky-200 rounded-2xl font-mono text-[10px] outline-none focus:border-sky-500" 
                       />
                     </div>
                  </div>
@@ -308,13 +382,13 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ config, onUpdate }) => {
           )}
 
           {saveStatus && (
-            <div className="p-4 bg-green-500 text-white text-xs font-black text-center rounded-2xl animate-bounce uppercase tracking-widest">
+            <div className="p-4 bg-emerald-500 text-white text-xs font-black text-center rounded-2xl animate-bounce uppercase tracking-widest shadow-lg shadow-emerald-500/20">
               ✓ ĐÃ LƯU TẤT CẢ THAY ĐỔI
             </div>
           )}
 
-          <div className="pt-8 border-t">
-             <button onClick={handleSave} className="w-full bg-orange-600 text-white py-6 rounded-[2rem] font-black uppercase tracking-widest shadow-2xl shadow-orange-600/30 hover:bg-orange-700 transition-all active:scale-95">LƯU CẤU HÌNH HỆ THỐNG</button>
+          <div className="pt-8 border-t border-sky-100">
+             <button onClick={handleSave} className="w-full bg-sky-600 text-white py-6 rounded-[2rem] font-black uppercase tracking-widest shadow-2xl shadow-sky-600/30 hover:bg-sky-700 transition-all active:scale-95">LƯU CẤU HÌNH HỆ THỐNG</button>
           </div>
         </div>
       </div>

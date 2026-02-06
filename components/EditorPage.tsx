@@ -65,6 +65,17 @@ const EditorPage: React.FC<EditorPageProps> = ({ post, onSave, onCancel }) => {
     }
   };
 
+  const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setThumbnail(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const removeDownload = (index: number) => {
     setDownloads(downloads.filter((_, i) => i !== index));
   };
@@ -238,11 +249,27 @@ const EditorPage: React.FC<EditorPageProps> = ({ post, onSave, onCancel }) => {
         <div className="lg:col-span-4 space-y-8">
            <div className="bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm space-y-8 sticky top-24">
               <div className="space-y-4">
-                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">Ảnh đại diện bài đăng</label>
-                 <div className="aspect-[16/10] rounded-3xl overflow-hidden bg-gray-50 border-2 border-gray-50 dark:border-gray-700 relative group shadow-sm">
-                    <img src={thumbnail} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="" />
+                 <div className="flex justify-between items-center">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">Ảnh đại diện bài đăng</label>
+                    <button 
+                      onClick={() => setThumbnail('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=800&auto=format&fit=crop')} 
+                      className="text-[8px] font-black text-red-500 uppercase tracking-widest hover:underline"
+                    >
+                      Xóa ảnh
+                    </button>
                  </div>
-                 <input value={thumbnail} onChange={e => setThumbnail(e.target.value)} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-900 border dark:border-gray-700 rounded-2xl outline-none focus:border-primary-500 text-[10px] font-bold dark:text-gray-300 shadow-inner" placeholder="Link ảnh (imgur, unsplash...)" />
+                 <div className="aspect-[16/10] rounded-3xl overflow-hidden bg-gray-50 border-2 border-gray-50 dark:border-gray-700 relative group shadow-sm">
+                    <img src={thumbnail} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Thumbnail Preview" />
+                    <label className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-center px-4">
+                        <svg className="w-8 h-8 text-white mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        <span className="text-[10px] font-black text-white uppercase tracking-widest bg-sky-600 px-4 py-2 rounded-xl">Tải ảnh lên từ máy</span>
+                        <input type="file" className="hidden" onChange={handleThumbnailUpload} />
+                    </label>
+                 </div>
+                 <div className="space-y-2">
+                    <label className="text-[8px] font-bold text-slate-400 uppercase ml-1">Hoặc dán link ảnh trực tiếp</label>
+                    <input value={thumbnail} onChange={e => setThumbnail(e.target.value)} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-900 border dark:border-gray-700 rounded-2xl outline-none focus:border-primary-500 text-[10px] font-bold dark:text-gray-300 shadow-inner" placeholder="https://..." />
+                 </div>
               </div>
 
               <div className="space-y-4">

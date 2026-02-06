@@ -33,6 +33,23 @@ const Header: React.FC<HeaderProps> = ({ navigateTo, currentUser, onLogout, logo
 
   const accentColor = config.accentColor || '#0ea5e9';
 
+  const renderIcon = (icon?: string) => {
+    if (!icon) return null;
+    
+    // Nếu là ảnh base64
+    if (icon.startsWith('data:image')) {
+      return <img src={icon} alt="icon" className="w-5 h-5 object-contain" />;
+    }
+    
+    // Nếu là mã HTML (Font Awesome <i>)
+    if (icon.trim().startsWith('<i')) {
+      return <span dangerouslySetInnerHTML={{ __html: icon }} className="text-lg flex items-center justify-center" />;
+    }
+    
+    // Mặc định là Emoji hoặc text
+    return <span className="text-lg">{icon}</span>;
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full shadow-md transition-all duration-300" style={{ backgroundColor: config.headerBgColor || '#ffffff', borderBottom: `3px solid ${accentColor}` }}>
       <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between max-w-7xl">
@@ -60,7 +77,7 @@ const Header: React.FC<HeaderProps> = ({ navigateTo, currentUser, onLogout, logo
 
           <div className="flex items-center gap-2 cursor-pointer group ml-1" onClick={() => {navigateTo(Page.HOME); onSelectLabel('All');}}>
             {logoUrl ? (
-              <img src={logoUrl} alt="Logo" className="h-10 w-auto object-contain" />
+              <img src={logoUrl} alt="Logo" className="object-contain" style={{ width: config.logoWidth || 'auto', height: config.logoHeight || 40 }} />
             ) : (
               <div className="flex flex-col">
                 <span className="font-black text-xl tracking-tighter text-slate-900 uppercase leading-none">PHẠM HOÀI VŨ</span>
@@ -84,7 +101,7 @@ const Header: React.FC<HeaderProps> = ({ navigateTo, currentUser, onLogout, logo
                 }}
                 className="px-5 py-2 text-[13px] font-bold uppercase tracking-wide transition-all flex items-center gap-2 text-slate-600 hover:text-sky-600 rounded-full hover:bg-sky-50/50"
               >
-                {item.icon && <span className="text-lg">{item.icon}</span>}
+                {renderIcon(item.icon)}
                 {item.label}
                 {item.isDropdown && (
                   <svg className={`w-3 h-3 transition-transform ${activeDropdown === item.id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7"/></svg>
