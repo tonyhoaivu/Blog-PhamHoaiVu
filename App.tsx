@@ -19,7 +19,6 @@ const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>(Page.HOME);
   const [currentPostId, setCurrentPostId] = useState<string | null>(null);
   const [activeLabels, setActiveLabels] = useState<string[] | null>(null);
-  const [toolParams, setToolParams] = useState<any>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   
@@ -36,10 +35,17 @@ const App: React.FC = () => {
         { label: 'Win 11', targetLabel: 'Win 11' }
       ]
     },
-    { id: 'software', label: 'PHẦN MỀM', targetLabel: 'Software' },
-    { id: '3', label: 'DRIVER', targetLabel: 'Driver PC' },
-    { id: '4', label: 'BOOT USB', targetLabel: 'BOOT USB' },
-    { id: '5', label: 'THỦ THUẬT', targetLabel: 'Thủ thuật' },
+    { 
+      id: 'software', 
+      label: 'PHẦN MỀM', 
+      isDropdown: true,
+      subItems: [
+        { label: 'Phần mềm PC', targetLabel: 'Software' },
+        { label: 'Driver PC', targetLabel: 'Driver PC' },
+        { label: 'USB BOOT', targetLabel: 'BOOT USB' },
+        { label: 'Thủ thuật', targetLabel: 'Thủ thuật' }
+      ]
+    },
     { 
       id: '6', 
       label: 'GAME', 
@@ -49,15 +55,9 @@ const App: React.FC = () => {
         { label: 'Game Mobile (Android)', targetLabel: 'Android' }
       ]
     },
-    { 
-      id: '7', 
-      label: 'CÔNG CỤ', 
-      isDropdown: true,
-      subItems: [
-        { label: 'Phạm Hoài Vũ AI Design', targetLabel: 'CREATE_IMAGE' },
-        { label: 'Phạm Hoài Vũ Ký Tự Đặc Biệt', targetLabel: 'SPECIAL_CHARS' }
-      ]
-    }
+    { id: 'kytu', label: 'KÝ TỰ ĐẸP', targetLabel: 'SPECIAL_CHARS' },
+    { id: 'design', label: 'TẠO ẢNH AI', targetLabel: 'CREATE_IMAGE' },
+    { id: 'contact', label: 'LIÊN HỆ', targetLabel: 'CONTACT_PAGE' }
   ];
 
   const [siteConfig, setSiteConfig] = useState<SiteConfig>({
@@ -80,15 +80,15 @@ const App: React.FC = () => {
   });
 
   useEffect(() => {
-    document.documentElement.classList.add('dark');
+    // Luôn giữ giao diện sáng cho phong cách Blogspot
+    document.documentElement.classList.remove('dark');
+    
     const savedUser = localStorage.getItem('phv_session');
     if (savedUser) setCurrentUser(JSON.parse(savedUser));
 
     const savedConfig = localStorage.getItem('phv_site_config');
     if (savedConfig) {
       setSiteConfig(prev => ({ ...prev, ...JSON.parse(savedConfig) }));
-    } else {
-      localStorage.setItem('phv_site_config', JSON.stringify(siteConfig));
     }
 
     const savedPosts = localStorage.getItem('phv_posts');
@@ -96,30 +96,27 @@ const App: React.FC = () => {
       setPosts(JSON.parse(savedPosts));
     } else {
       setPosts(INITIAL_POSTS);
-      localStorage.setItem('phv_posts', JSON.stringify(INITIAL_POSTS));
     }
   }, []);
 
-  const navigateTo = (page: Page, id?: string, params?: any) => {
+  const navigateTo = (page: Page, id?: string) => {
     setCurrentPage(page);
     if (id) setCurrentPostId(id);
-    if (params) setToolParams(params);
     if (page !== Page.HOME) setActiveLabels(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleLabelFilter = (labelInput: string | string[]) => {
-      if (typeof labelInput === 'string') {
-        if (labelInput === 'SPECIAL_CHARS') return navigateTo(Page.SPECIAL_CHARS);
-        if (labelInput === 'CREATE_IMAGE') return navigateTo(Page.CREATE_IMAGE);
-        if (labelInput === 'All') {
-          setActiveLabels(null);
-          setCurrentPage(Page.HOME);
-          return;
-        }
-      }
-      setActiveLabels(Array.isArray(labelInput) ? labelInput : [labelInput]);
+  const handleLabelFilter = (labelInput: string) => {
+    if (labelInput === 'SPECIAL_CHARS') return navigateTo(Page.SPECIAL_CHARS);
+    if (labelInput === 'CREATE_IMAGE') return navigateTo(Page.CREATE_IMAGE);
+    if (labelInput === 'CONTACT_PAGE') return navigateTo(Page.CONTACT);
+    if (labelInput === 'All') {
+      setActiveLabels(null);
       setCurrentPage(Page.HOME);
+    } else {
+      setActiveLabels([labelInput]);
+      setCurrentPage(Page.HOME);
+    }
   };
 
   const filteredPosts = activeLabels 
@@ -127,9 +124,9 @@ const App: React.FC = () => {
     : posts;
 
   return (
-    <div className="min-h-screen flex flex-col transition-colors duration-500 bg-[#0f172a] text-slate-200 selection:bg-cyan-500/30">
+    <div className="min-h-screen flex flex-col bg-white text-slate-800 transition-colors duration-300">
       <Header 
-        isDarkMode={true} 
+        isDarkMode={false}
         toggleDarkMode={() => {}}
         navigateTo={navigateTo} 
         currentPage={currentPage}
@@ -141,14 +138,14 @@ const App: React.FC = () => {
         config={siteConfig}
       />
       
-      <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl relative z-10">
+      <main className="flex-grow container mx-auto px-4 md:px-6 py-10 max-w-7xl relative">
         {currentPage === Page.LOGIN && <LoginPage onLogin={(u) => { setCurrentUser(u); localStorage.setItem('phv_session', JSON.stringify(u)); navigateTo(Page.ADMIN); }} navigateTo={navigateTo} />}
         {currentPage === Page.HOME && (
           <HomePage 
             posts={filteredPosts} 
             navigateTo={navigateTo} 
             currentUser={currentUser} 
-            onLogin={(u) => {}} onLogout={() => {}} 
+            onLogin={() => {}} onLogout={() => {}} 
             config={siteConfig}
             activeLabel={activeLabels?.join(', ')}
             onClearFilter={() => setActiveLabels(null)}
