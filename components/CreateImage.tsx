@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI } from "@google/genai";
 
@@ -40,21 +39,32 @@ const CreateImage: React.FC = () => {
     
     setIsGenerating(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      // Sửa lỗi TS2339 bằng cách ép kiểu an toàn cho import.meta
+      const meta = import.meta as any;
+      const apiKey = meta.env?.VITE_API_KEY || "YOUR_API_KEY_HERE";
+      
+      const ai = new GoogleGenAI(apiKey);
       const fullPrompt = `${prompt}, ${artStyle}, masterpiece, professional composition, high details.`;
       
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash-image',
+        model: 'gemini-2.0-flash-exp',
         contents: { parts: [{ text: fullPrompt }] },
         config: {
           imageConfig: { aspectRatio: selectedTemplate.aspectRatio },
         },
       });
 
-      for (const part of response.candidates[0].content.parts) {
-        if (part.inlineData) {
-          setAiImageBase64(`data:image/png;base64,${part.inlineData.data}`);
-          break;
+      // Sửa lỗi TS18048 an toàn tuyệt đối
+      const candidates = response.candidates;
+      if (candidates && candidates.length > 0) {
+        const parts = candidates[0].content?.parts;
+        if (parts) {
+          for (const part of parts) {
+            if (part.inlineData) {
+              setAiImageBase64(`data:image/png;base64,${part.inlineData.data}`);
+              break;
+            }
+          }
         }
       }
     } catch (error) {
@@ -79,6 +89,7 @@ const CreateImage: React.FC = () => {
 
       if (aiImageBase64) {
         const img = new Image();
+        img.crossOrigin = "anonymous";
         img.onload = () => {
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
           drawUI(ctx);
@@ -97,7 +108,6 @@ const CreateImage: React.FC = () => {
 
     const drawUI = (ctx: CanvasRenderingContext2D) => {
       ctx.save();
-      // Main Text
       ctx.textAlign = 'center';
       ctx.fillStyle = textColor;
       ctx.shadowBlur = 20;
@@ -105,18 +115,17 @@ const CreateImage: React.FC = () => {
       ctx.font = `italic 900 ${fontSize}px Inter`;
       ctx.fillText(mainText, canvas.width / 2, (canvas.height / 2) + textYOffset);
 
-      // Sub Text
       ctx.font = `bold ${fontSize * 0.4}px Inter`;
       ctx.fillStyle = 'white';
       ctx.globalAlpha = 0.8;
       ctx.fillText(subText, canvas.width / 2, (canvas.height / 2) + (fontSize * 0.7) + textYOffset);
       
-      // Mandatory Watermark
+      // Watermark bảo mật
       ctx.globalAlpha = 0.5;
       ctx.textAlign = 'right';
       ctx.font = 'bold 12px Inter';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText('phamhoaivu.vercel.app', canvas.width - 20, canvas.height - 20);
+      ctx.fillText('tonyhoaivu.unaux.com', canvas.width - 20, canvas.height - 20);
       ctx.restore();
     };
 
@@ -131,71 +140,64 @@ const CreateImage: React.FC = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-700">
-      {/* Controls */}
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 p-4">
       <div className="lg:col-span-4 space-y-6">
-        <div className="bg-slate-900 border border-white/5 rounded-[2.5rem] p-8 space-y-6 shadow-2xl">
+        <div className="bg-slate-900 border border-white/5 rounded-[2rem] p-6 space-y-6 shadow-2xl">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-cyan-600 rounded-xl flex items-center justify-center text-white"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
-            <h2 className="text-xl font-black uppercase tracking-tighter">Phạm Hoài Vũ AI Design</h2>
+            <div className="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center text-white">
+              <i className="fas fa-magic"></i>
+            </div>
+            <h2 className="text-lg font-black uppercase text-white">PHV AI Design</h2>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">1. Chọn Template</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">1. Chọn Template</label>
               <select 
                 onChange={(e) => setSelectedTemplate(TEMPLATES.find(t => t.name === e.target.value) || TEMPLATES[0])}
-                className="w-full mt-2 bg-slate-950 border border-white/10 rounded-xl p-4 text-xs font-bold text-slate-300 outline-none focus:border-cyan-500"
+                className="w-full mt-2 bg-slate-950 border border-white/10 rounded-xl p-3 text-xs text-white outline-none focus:border-orange-500"
               >
-                {TEMPLATES.map(t => <option key={t.name} value={t.name}>{t.name} - {t.width}x{t.height}</option>)}
+                {TEMPLATES.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
               </select>
             </div>
 
             <div>
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">2. Mô tả ý tưởng</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">2. Ý tưởng ảnh</label>
               <textarea 
                 value={prompt}
                 onChange={e => setPrompt(e.target.value)}
-                placeholder="Ví dụ: Một chiến binh cyber rực rỡ dưới mưa..."
-                className="w-full mt-2 bg-slate-950 border border-white/10 rounded-xl p-4 text-xs font-medium text-white outline-none focus:border-cyan-500 h-24 resize-none shadow-inner"
+                placeholder="Mô tả hình ảnh bạn muốn tạo..."
+                className="w-full mt-2 bg-slate-950 border border-white/10 rounded-xl p-3 text-xs text-white h-24 resize-none focus:border-orange-500"
               />
             </div>
 
             <button 
               onClick={generateAIImage}
               disabled={isGenerating}
-              className={`w-full py-5 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-3 ${isGenerating ? 'bg-slate-800' : 'bg-cyan-600 hover:bg-cyan-500 text-white shadow-xl shadow-cyan-600/20'}`}
+              className={`w-full py-4 rounded-xl font-bold text-xs uppercase transition-all ${isGenerating ? 'bg-slate-800 text-slate-500' : 'bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/20'}`}
             >
-              {isGenerating ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div> : 'BẮT ĐẦU TẠO ẢNH'}
+              {isGenerating ? 'ĐANG TẠO...' : 'BẮT ĐẦU TẠO'}
             </button>
           </div>
 
-          <div className="pt-6 border-t border-white/5 space-y-4">
-            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">3. Tùy chỉnh văn bản</label>
-            <div className="grid grid-cols-2 gap-3">
-              <input type="text" value={mainText} onChange={e => setMainText(e.target.value)} className="bg-slate-950 border border-white/10 rounded-xl p-3 text-[10px] font-bold outline-none" placeholder="Tên chính" />
-              <input type="text" value={subText} onChange={e => setSubText(e.target.value)} className="bg-slate-950 border border-white/10 rounded-xl p-3 text-[10px] font-bold outline-none" placeholder="Slogan" />
-            </div>
-            <div className="flex gap-3">
-              <input type="color" value={textColor} onChange={e => setTextColor(e.target.value)} className="w-12 h-10 rounded-xl bg-slate-950 border border-white/10 cursor-pointer" />
-              <input type="number" value={fontSize} onChange={e => setFontSize(Number(e.target.value))} className="flex-grow bg-slate-950 border border-white/10 rounded-xl p-3 text-[10px] font-bold outline-none" />
+          <div className="pt-4 border-t border-white/5 space-y-4">
+            <div className="grid grid-cols-2 gap-2">
+              <input type="text" value={mainText} onChange={e => setMainText(e.target.value)} className="bg-slate-950 border border-white/10 rounded-lg p-2 text-xs text-white" placeholder="Tên" />
+              <input type="text" value={subText} onChange={e => setSubText(e.target.value)} className="bg-slate-950 border border-white/10 rounded-lg p-2 text-xs text-white" placeholder="Slogan" />
             </div>
           </div>
 
-          <button onClick={download} className="w-full py-4 bg-white/5 hover:bg-white/10 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-white/5 transition-all flex items-center justify-center gap-2">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <button onClick={download} className="w-full py-3 bg-white/5 hover:bg-white/10 rounded-xl font-bold text-[10px] border border-white/5 text-white">
             XUẤT ẢNH PNG
           </button>
         </div>
       </div>
 
-      {/* Preview */}
-      <div className="lg:col-span-8 flex items-center justify-center bg-slate-950 rounded-[3rem] p-8 border border-white/5 min-h-[600px] overflow-hidden relative group">
-        <div className="absolute inset-0 bg-cyan-500/5 blur-[120px] opacity-0 group-hover:opacity-100 transition-opacity"></div>
-        <div className="relative shadow-2xl rounded-2xl overflow-hidden max-w-full">
-           <canvas ref={canvasRef} className="max-w-full h-auto" />
+      <div className="lg:col-span-8 flex flex-col items-center justify-center bg-slate-950 rounded-[2rem] p-6 border border-white/5 relative min-h-[500px]">
+        <div className="relative shadow-2xl rounded-lg overflow-hidden border border-white/10">
+           <canvas ref={canvasRef} className="max-w-full h-auto shadow-2xl" />
         </div>
-        <div className="absolute bottom-6 text-[10px] font-black text-slate-700 tracking-[0.5em] uppercase">Pham Hoai Vu Studio - Quality Verified</div>
+        <p className="mt-4 text-[10px] text-slate-600 uppercase tracking-widest">© Pham Hoai Vu - AI Studio Preview</p>
       </div>
     </div>
   );
