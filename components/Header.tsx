@@ -13,9 +13,11 @@ interface HeaderProps {
   labels: string[];
   onSelectLabel: (label: string) => void;
   config: SiteConfig;
+  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ navigateTo, currentUser, onLogout, logoUrl, config, onSelectLabel }) => {
+const Header: React.FC<HeaderProps> = ({ navigateTo, currentUser, onLogout, logoUrl, config, onSelectLabel, sidebarOpen, setSidebarOpen, currentPage }) => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -30,22 +32,38 @@ const Header: React.FC<HeaderProps> = ({ navigateTo, currentUser, onLogout, logo
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-slate-100 shadow-sm">
-      <div className="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between max-w-7xl">
-        {/* LOGO */}
-        <div className="flex items-center gap-1 cursor-pointer group" onClick={() => {navigateTo(Page.HOME); onSelectLabel('All');}}>
-          {logoUrl ? (
-            <img src={logoUrl} alt="Logo" className="h-10 w-auto object-contain" />
-          ) : (
-            <div className="flex items-center">
-              <span className="font-black text-2xl tracking-tighter text-slate-900 uppercase">Pham</span>
-              <span className="font-black text-2xl tracking-tighter text-blue-600 uppercase">HoaiVu</span>
-            </div>
-          )}
+    <header className="max-w-6xl mx-auto w-full sticky top-4 z-50">
+      <div className="bg-white/90 backdrop-blur-xl border border-white shadow-xl shadow-blue-500/5 rounded-[2.5rem] px-8 h-20 flex items-center justify-between">
+        
+        {/* LOGO & SIDEBAR TOGGLE */}
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-2.5 bg-slate-100 rounded-full hover:bg-blue-600 hover:text-white transition-all text-slate-500 lg:flex hidden"
+            title={sidebarOpen ? "Đóng Sidebar" : "Mở Sidebar"}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d={sidebarOpen ? "M4 6h16M4 12h10M4 18h16" : "M4 6h16M4 12h16M4 18h16"} />
+            </svg>
+          </button>
+
+          <div className="flex items-center gap-2 cursor-pointer group" onClick={() => {navigateTo(Page.HOME); onSelectLabel('All');}}>
+            {logoUrl ? (
+              <img src={logoUrl} alt="Logo" className="h-10 w-auto object-contain" />
+            ) : (
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-black shadow-lg">V</div>
+                <div className="flex flex-col">
+                  <span className="font-black text-lg tracking-tighter text-slate-900 leading-none">Pham</span>
+                  <span className="font-black text-lg tracking-tighter text-blue-600 leading-none">HoaiVu</span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* NAVIGATION */}
-        <nav className="hidden lg:flex items-center gap-2" ref={dropdownRef}>
+        <nav className="hidden lg:flex items-center gap-4" ref={dropdownRef}>
           {config.menuItems.map(item => (
             <div 
               key={item.id} 
@@ -62,7 +80,7 @@ const Header: React.FC<HeaderProps> = ({ navigateTo, currentUser, onLogout, logo
                     onSelectLabel(item.targetLabel);
                   }
                 }}
-                className={`px-4 py-2 text-[13px] font-bold uppercase tracking-wide transition-all flex items-center gap-1.5 rounded-lg ${activeDropdown === item.id ? 'text-blue-600' : 'text-slate-700 hover:text-blue-600'}`}
+                className={`px-4 py-2 text-[12px] font-bold uppercase tracking-widest transition-all flex items-center gap-1.5 rounded-full ${activeDropdown === item.id ? 'text-blue-600 bg-blue-50' : 'text-slate-700 hover:text-blue-600'}`}
               >
                 {item.label}
                 {item.isDropdown && (
@@ -71,7 +89,7 @@ const Header: React.FC<HeaderProps> = ({ navigateTo, currentUser, onLogout, logo
               </button>
 
               {item.isDropdown && activeDropdown === item.id && (
-                <div className="absolute top-full left-0 w-52 bg-white border border-slate-100 shadow-2xl py-2 rounded-b-xl animate-in fade-in slide-in-from-top-1">
+                <div className="absolute top-full left-0 w-52 bg-white border border-slate-100 shadow-2xl py-4 rounded-[1.5rem] mt-2 animate-in fade-in slide-in-from-top-2">
                   {item.subItems?.map((sub, idx) => (
                     <button 
                       key={idx} 
@@ -79,10 +97,9 @@ const Header: React.FC<HeaderProps> = ({ navigateTo, currentUser, onLogout, logo
                         onSelectLabel(sub.targetLabel);
                         setActiveDropdown(null);
                       }}
-                      className="w-full text-left px-5 py-3 text-[13px] font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center justify-between"
+                      className="w-full text-left px-6 py-2.5 text-[13px] font-bold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-all"
                     >
                       {sub.label}
-                      <div className="w-1 h-1 bg-blue-600 rounded-full opacity-0 group-hover:opacity-100"></div>
                     </button>
                   ))}
                 </div>
@@ -94,14 +111,9 @@ const Header: React.FC<HeaderProps> = ({ navigateTo, currentUser, onLogout, logo
         {/* ACTIONS */}
         <div className="flex items-center gap-3">
           {currentUser ? (
-            <div className="flex items-center gap-2">
-              <button onClick={() => navigateTo(Page.ADMIN)} className="text-[11px] font-bold bg-blue-50 text-blue-600 px-4 py-2 rounded-full border border-blue-100 uppercase tracking-wider">ADMIN</button>
-              <button onClick={onLogout} className="text-[11px] font-bold bg-red-600 text-white px-4 py-2 rounded-full shadow-lg uppercase tracking-wider">THOÁT</button>
-            </div>
+            <button onClick={() => navigateTo(Page.ADMIN)} className="bg-blue-600 text-white px-6 py-2.5 rounded-full text-[11px] font-black uppercase tracking-widest hover:bg-blue-700 transition shadow-md">ADMIN</button>
           ) : (
-            <button onClick={() => navigateTo(Page.LOGIN)} className="p-2.5 text-slate-400 hover:text-blue-600 transition-colors">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-            </button>
+            <button onClick={() => navigateTo(Page.LOGIN)} className="bg-slate-100 text-slate-600 px-6 py-2.5 rounded-full text-[11px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition shadow-md">Đăng Nhập</button>
           )}
         </div>
       </div>

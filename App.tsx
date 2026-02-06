@@ -21,6 +21,7 @@ const App: React.FC = () => {
   const [activeLabels, setActiveLabels] = useState<string[] | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   
   const defaultMenu: MenuItem[] = [
     { id: '1', label: 'TRANG CHỦ' },
@@ -44,15 +45,6 @@ const App: React.FC = () => {
         { label: 'Driver PC', targetLabel: 'Driver PC' },
         { label: 'USB BOOT', targetLabel: 'BOOT USB' },
         { label: 'Thủ thuật', targetLabel: 'Thủ thuật' }
-      ]
-    },
-    { 
-      id: '6', 
-      label: 'GAME', 
-      isDropdown: true,
-      subItems: [
-        { label: 'Game PC (ISO)', targetLabel: 'ISO' },
-        { label: 'Game Mobile (Android)', targetLabel: 'Android' }
       ]
     },
     { id: 'kytu', label: 'KÝ TỰ ĐẸP', targetLabel: 'SPECIAL_CHARS' },
@@ -80,23 +72,14 @@ const App: React.FC = () => {
   });
 
   useEffect(() => {
-    // Luôn giữ giao diện sáng cho phong cách Blogspot
     document.documentElement.classList.remove('dark');
-    
     const savedUser = localStorage.getItem('phv_session');
     if (savedUser) setCurrentUser(JSON.parse(savedUser));
-
     const savedConfig = localStorage.getItem('phv_site_config');
-    if (savedConfig) {
-      setSiteConfig(prev => ({ ...prev, ...JSON.parse(savedConfig) }));
-    }
-
+    if (savedConfig) setSiteConfig(prev => ({ ...prev, ...JSON.parse(savedConfig) }));
     const savedPosts = localStorage.getItem('phv_posts');
-    if (savedPosts) {
-      setPosts(JSON.parse(savedPosts));
-    } else {
-      setPosts(INITIAL_POSTS);
-    }
+    if (savedPosts) setPosts(JSON.parse(savedPosts));
+    else setPosts(INITIAL_POSTS);
   }, []);
 
   const navigateTo = (page: Page, id?: string) => {
@@ -124,7 +107,7 @@ const App: React.FC = () => {
     : posts;
 
   return (
-    <div className="min-h-screen flex flex-col bg-white text-slate-800 transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-[#f3f4f6] text-slate-800 transition-colors duration-300 p-4 md:p-6">
       <Header 
         isDarkMode={false}
         toggleDarkMode={() => {}}
@@ -136,22 +119,26 @@ const App: React.FC = () => {
         labels={Array.from(new Set(posts.flatMap(p => p.labels)))}
         onSelectLabel={handleLabelFilter}
         config={siteConfig}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
       />
       
-      <main className="flex-grow container mx-auto px-4 md:px-6 py-10 max-w-7xl relative">
+      <main className="flex-grow container mx-auto py-10 max-w-7xl relative">
         {currentPage === Page.LOGIN && <LoginPage onLogin={(u) => { setCurrentUser(u); localStorage.setItem('phv_session', JSON.stringify(u)); navigateTo(Page.ADMIN); }} navigateTo={navigateTo} />}
         {currentPage === Page.HOME && (
           <HomePage 
             posts={filteredPosts} 
             navigateTo={navigateTo} 
             currentUser={currentUser} 
-            onLogin={() => {}} onLogout={() => {}} 
+            onLogin={(u) => { setCurrentUser(u); localStorage.setItem('phv_session', JSON.stringify(u)); }} 
+            onLogout={() => { setCurrentUser(null); localStorage.removeItem('phv_session'); }} 
             config={siteConfig}
             activeLabel={activeLabels?.join(', ')}
             onClearFilter={() => setActiveLabels(null)}
+            sidebarOpen={sidebarOpen}
           />
         )}
-        {currentPage === Page.POST && posts.find(p => p.id === currentPostId) && <PostPage post={posts.find(p => p.id === currentPostId)!} allPosts={posts} navigateTo={navigateTo} currentUser={currentUser} onLogin={() => {}} onLogout={() => {}} config={siteConfig} />}
+        {currentPage === Page.POST && posts.find(p => p.id === currentPostId) && <PostPage post={posts.find(p => p.id === currentPostId)!} allPosts={posts} navigateTo={navigateTo} currentUser={currentUser} onLogin={() => {}} onLogout={() => {}} config={siteConfig} sidebarOpen={sidebarOpen} />}
         {currentPage === Page.ADMIN && <AdminDashboard posts={posts} navigateTo={navigateTo} onDelete={() => {}} onLogout={() => {}} />}
         {currentPage === Page.EDITOR && <EditorPage post={posts.find(p => p.id === currentPostId) || null} onSave={() => {}} onCancel={() => navigateTo(Page.ADMIN)} />}
         {currentPage === Page.SETTINGS && <SettingsPage config={siteConfig} onUpdate={() => {}} />}

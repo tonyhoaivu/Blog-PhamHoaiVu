@@ -13,75 +13,71 @@ const Footer: React.FC<FooterProps> = ({ navigateTo, logoUrl, onSelectLabel }) =
   const domain = "phamhoaivu.vercel.app";
 
   return (
-    <footer className="bg-[#1a1a1a] text-white pt-16 pb-8 px-6">
-      <div className="container mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12 border-b border-white/5 pb-12">
-          
-          {/* Cột 1: Giới thiệu */}
-          <div className="space-y-6">
-            <h4 className="text-xl font-black tracking-tighter uppercase">Tony Hoài Vũ</h4>
-            <p className="text-slate-400 text-sm leading-relaxed">
-              Tony Hoài Vũ - Chuyên trang chia sẻ Template Blogspot, thủ thuật máy tính, bộ cài Windows và tài nguyên đồ họa miễn phí cho cộng đồng.
-            </p>
-            <div className="flex gap-4">
-               <a href="#" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-slate-300 hover:bg-blue-600 hover:text-white transition-all">FB</a>
-               <a href="#" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-slate-300 hover:bg-red-600 hover:text-white transition-all">YT</a>
-               <a href="#" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-slate-300 hover:bg-blue-400 hover:text-white transition-all">TW</a>
-            </div>
+    <footer className="max-w-6xl mx-auto w-full mb-10 mt-16">
+      <div className="bg-gradient-to-br from-blue-600 to-blue-500 text-white p-12 md:p-16 rounded-[4rem] shadow-2xl shadow-blue-500/20 flex flex-col md:flex-row gap-16 relative overflow-hidden">
+        
+        {/* Cột 1: Brand & Social */}
+        <div className="flex-1 space-y-8">
+          <div className="flex items-center gap-3">
+            <div className="w-4 h-4 bg-yellow-400 rounded-full shadow-[0_0_15px_rgba(250,204,21,0.5)] animate-pulse"></div>
+            <h4 className="text-3xl font-black tracking-tight uppercase">Tony Hoài Vũ</h4>
           </div>
-
-          {/* Cột 2: Danh mục chính */}
-          <div className="space-y-6">
-            <h5 className="text-[13px] font-black uppercase tracking-[0.2em] text-blue-500">DANH MỤC</h5>
-            <ul className="space-y-3">
-              {[
-                { label: 'WINDOWS', target: 'Win 11' },
-                { label: 'Phần mềm PC', target: 'Software' },
-                { label: 'Driver Máy Tính', target: 'Driver PC' },
-                { label: 'BOOT USB', target: 'BOOT USB' },
-                { label: 'Thủ thuật công nghệ', target: 'Thủ thuật' },
-                { label: 'Game PC ISO', target: 'ISO' }
-              ].map(cat => (
-                <li key={cat.label}>
-                  <button onClick={() => onSelectLabel(cat.target)} className="text-slate-400 text-sm hover:text-blue-500 transition-colors text-left">
-                    {cat.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Cột 3: Liên kết */}
-          <div className="space-y-6">
-            <h5 className="text-[13px] font-black uppercase tracking-[0.2em] text-blue-500">LIÊN KẾT</h5>
-            <ul className="space-y-3">
-              {['Về tôi', 'Chính sách bảo mật', 'Điều khoản sử dụng', 'Liên hệ hợp tác'].map(item => (
-                <li key={item}>
-                  <button onClick={() => navigateTo(Page.ABOUT)} className="text-slate-400 text-sm hover:text-blue-500 transition-colors text-left">
-                    {item}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Cột 4: Đăng ký */}
-          <div className="space-y-6">
-            <h5 className="text-[13px] font-black uppercase tracking-[0.2em] text-blue-500">BẢN TIN</h5>
-            <p className="text-slate-400 text-sm">Nhận thông báo bài viết mới nhất qua Email.</p>
-            <div className="flex gap-2">
-              <input type="email" placeholder="Email của bạn..." className="bg-white/5 border border-white/10 px-4 py-2 rounded-lg text-sm outline-none focus:border-blue-500 flex-grow" />
-              <button className="bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider hover:bg-blue-700">Gửi</button>
-            </div>
+          <p className="text-blue-50 text-base leading-relaxed max-w-xs opacity-90 font-medium">
+            Chia sẻ Template, thủ thuật Blogspot & tài nguyên thiết kế miễn phí. Cùng sáng tạo mỗi ngày!
+          </p>
+          <div className="flex gap-4">
+             {['fb', 'yt', 'gh'].map((icon) => (
+               <div key={icon} className="w-12 h-12 bg-white/15 backdrop-blur-md rounded-full flex items-center justify-center font-black text-[10px] uppercase cursor-pointer hover:bg-white hover:text-blue-600 transition-all duration-300">
+                 {icon}
+               </div>
+             ))}
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 text-[11px] font-bold uppercase tracking-widest">
-          <div>© 2026 {domain} - ALL RIGHTS RESERVED</div>
-          <div className="flex gap-4">
-            <span className="hover:text-white cursor-pointer transition-colors">Tony Hoài Vũ Blog</span>
-            <span className="hover:text-white cursor-pointer transition-colors">Premium Template</span>
-          </div>
+        {/* Cột 2: Danh mục */}
+        <div className="space-y-6">
+          <h4 className="text-[11px] font-black uppercase tracking-[3px] text-blue-200">DANH MỤC</h4>
+          <ul className="space-y-3 text-sm font-bold">
+            {[
+              { label: 'Windows', target: 'Win 11' },
+              { label: 'Software', target: 'Software' },
+              { label: 'Driver', target: 'Driver PC' },
+              { label: 'Thủ Thuật Windows', target: 'Thủ thuật' },
+              { label: 'Code Thủ Thuật Windows', target: 'Thủ thuật' }
+            ].map(item => (
+              <li key={item.label} onClick={() => onSelectLabel(item.target)} className="hover:translate-x-2 transition-transform cursor-pointer opacity-80 hover:opacity-100 flex items-center gap-2">
+                <span className="w-1 h-1 bg-blue-300 rounded-full"></span>
+                {item.label}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Cột 3: Liên hệ */}
+        <div className="space-y-6">
+          <h4 className="text-[11px] font-black uppercase tracking-[3px] text-blue-200">LIÊN HỆ</h4>
+          <ul className="space-y-4 text-sm font-bold">
+            <li className="flex items-center gap-3">
+              <span className="text-xl">✉️</span> tonyhoaivu@gmail.com
+            </li>
+            <li className="flex items-center gap-3">
+              <span className="text-xl">☎️</span> Hỗ trợ 24/7 trực tuyến
+            </li>
+            <li className="pt-4">
+              <button onClick={() => navigateTo(Page.CONTACT)} className="bg-white text-blue-600 px-6 py-2.5 rounded-full text-[11px] font-black uppercase tracking-widest hover:bg-blue-50 transition">Gửi tin nhắn</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Chân trang dưới cùng */}
+      <div className="mt-10 px-10 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-slate-400 font-black uppercase tracking-[3px]">
+        <p>© 2026 {domain}</p>
+        <div className="flex gap-8">
+          <span className="hover:text-blue-600 cursor-pointer transition">Contact</span>
+          <span className="hover:text-blue-600 cursor-pointer transition">Sitemap</span>
+          <span className="hover:text-blue-600 cursor-pointer transition">Privacy</span>
+          <span className="hover:text-blue-600 cursor-pointer transition">Disclaimer</span>
         </div>
       </div>
     </footer>
