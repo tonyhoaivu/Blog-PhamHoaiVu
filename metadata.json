@@ -1,0 +1,8 @@
+{
+  "name": "Phạm Hoài Vũ Blog - Premium CMS",
+  "description": "A high-performance Blog CMS clone for tech bloggers specializing in Windows installers and software sharing.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

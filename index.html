@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phạm Hoài Vũ Blog - Windows & Software Premium CMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-config" crossorigin="anonymous"></script>
+    <script id="adsense-dynamic-script"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                    },
+                    borderRadius: {
+                      '4xl': '2rem',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass-card {
+            background: rgba(31, 41, 55, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        #snow-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.7;
+        }
+
+        .side-banner {
+            position: fixed;
+            top: 100px;
+            width: 160px;
+            height: 600px;
+            z-index: 40;
+            display: none;
+            transition: opacity 0.3s;
+        }
+        @media (min-width: 1600px) {
+            .side-banner { display: block; }
+        }
+        .side-banner-left { left: 10px; }
+        .side-banner-right { right: 10px; }
+        
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+
+        .tet-decoration {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 100px;
+            z-index: 30;
+            pointer-events: none;
+            display: none;
+        }
+        @media (min-width: 1400px) {
+            .tet-decoration { display: block; }
+        }
+        .tet-left { left: 0; background: linear-gradient(to right, rgba(239, 68, 68, 0.05), transparent); }
+        .tet-right { right: 0; background: linear-gradient(to left, rgba(239, 68, 68, 0.05), transparent); }
+
+        .tet-item {
+            position: absolute;
+            font-size: 32px;
+            animation: sway 4s ease-in-out infinite;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+        @keyframes sway {
+            0%, 100% { transform: rotate(-8deg) translateY(0); }
+            50% { transform: rotate(8deg) translateY(-10px); }
+        }
+
+        .ql-container { border-bottom-left-radius: 1.5rem; border-bottom-right-radius: 1.5rem; font-family: 'Inter', sans-serif !important; border-color: #f3f4f6 !important; }
+        .ql-toolbar { border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem; border-color: #f3f4f6 !important; background: #f9fafb; padding: 1rem !important; }
+        .dark .ql-toolbar { background: #111827; border-color: #374151 !important; }
+        .dark .ql-container { border-color: #374151 !important; }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.3",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "react-quill": "https://esm.sh/react-quill@^2.0.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-[#f8fbfd] dark:bg-gray-950 transition-colors duration-200">
+    <canvas id="snow-canvas"></canvas>
+    
+    <div class="tet-decoration tet-left">
+        <div class="tet-item" style="top: 5%; left: 20px;">🧧</div>
+        <div class="tet-item" style="top: 25%; left: 40px; animation-delay: 0.5s;">🏮</div>
+        <div class="tet-item" style="top: 45%; left: 15px; animation-delay: 1s;">🌸</div>
+        <div class="tet-item" style="top: 65%; left: 45px; animation-delay: 1.5s;">🏮</div>
+        <div class="tet-item" style="top: 85%; left: 25px; animation-delay: 2s;">🧧</div>
+    </div>
+    <div class="tet-decoration tet-right">
+        <div class="tet-item" style="top: 10%; right: 20px;">🏮</div>
+        <div class="tet-item" style="top: 30%; right: 40px; animation-delay: 0.7s;">🌸</div>
+        <div class="tet-item" style="top: 50%; right: 15px; animation-delay: 1.2s;">🧧</div>
+        <div class="tet-item" style="top: 70%; right: 45px; animation-delay: 1.8s;">🏮</div>
+        <div class="tet-item" style="top: 90%; right: 25px; animation-delay: 2.3s;">🧧</div>
+    </div>
+
+    <div id="root"></div>
+    <!-- Cập nhật quan trọng: Vite yêu cầu chỉ định type="module" -->
+    <script type="module" src="/index.tsx"></script>
+
+    <script>
+        const canvas = document.getElementById('snow-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.size = Math.random() * 2.5 + 1;
+                this.speed = Math.random() * 0.6 + 0.2;
+                this.wind = Math.random() * 0.3 - 0.15;
+                this.opacity = Math.random() * 0.6 + 0.3;
+            }
+            update() {
+                this.y += this.speed;
+                this.x += this.wind;
+                if (this.y > canvas.height) this.reset();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 180; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        window.addEventListener('adsenseUpdate', (e) => {
+            const scriptContent = e.detail;
+            if (scriptContent) {
+                const range = document.createRange();
+                const fragment = range.createContextualFragment(scriptContent);
+                document.head.appendChild(fragment);
+            }
+        });
+    </script>
+</body>
+</html>
