@@ -39,7 +39,15 @@ const Sidebar: React.FC<SidebarProps> = ({ posts, navigateTo, currentUser, onLog
       />
 
       {/* Newsletter Widget */}
-      <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl p-6 shadow-xl shadow-primary-500/20 text-white overflow-hidden relative group">
+      <div 
+        className="rounded-2xl p-6 shadow-xl text-white overflow-hidden relative group"
+        style={{ 
+          background: config.accentColor 
+            ? `linear-gradient(to bottom right, ${config.accentColor}, ${config.accentColor}cc)` 
+            : 'linear-gradient(to bottom right, #2563eb, #1d4ed8)',
+          boxShadow: `0 20px 25px -5px ${config.accentColor}33`
+        }}
+      >
         <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
         <div className="relative z-10">
           <h3 className="text-xs font-black uppercase tracking-[0.2em] mb-2">Nhận Tin Mới Nhất</h3>
@@ -59,7 +67,10 @@ const Sidebar: React.FC<SidebarProps> = ({ posts, navigateTo, currentUser, onLog
                 required
                 className="w-full bg-white/10 border border-white/20 px-4 py-3 rounded-xl outline-none placeholder-white/50 text-[11px] font-bold focus:bg-white/20 transition-all"
               />
-              <button className="w-full bg-white text-primary-600 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg hover:bg-gray-100 transition-all active:scale-95">
+              <button 
+                className="w-full bg-white py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg hover:bg-gray-100 transition-all active:scale-95"
+                style={{ color: config.accentColor || '#2563eb' }}
+              >
                 ĐĂNG KÝ NGAY
               </button>
             </form>
@@ -68,8 +79,8 @@ const Sidebar: React.FC<SidebarProps> = ({ posts, navigateTo, currentUser, onLog
       </div>
 
       {/* Quảng Cáo Sidebar */}
-      <div className="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 glass-card">
-        <div className="p-3 bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-700 flex items-center justify-between">
+      <div className="rounded-3xl overflow-hidden shadow-sm border border-gray-100 glass-card" style={{ backgroundColor: config.sidebarBgColor || '#ffffff' }}>
+        <div className="p-3 bg-gray-50 border-b flex items-center justify-between">
            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{config.sidebarAdsTitle}</span>
            <span className="text-[8px] bg-red-600 text-white px-1.5 py-0.5 rounded font-bold uppercase tracking-widest">Sponsor</span>
         </div>
@@ -87,9 +98,9 @@ const Sidebar: React.FC<SidebarProps> = ({ posts, navigateTo, currentUser, onLog
 
       <SidebarTabs posts={posts} navigateTo={navigateTo} config={config} />
 
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 glass-card">
-        <h3 className="text-sm font-black mb-6 flex items-center gap-2 dark:text-white uppercase tracking-[0.2em] text-gray-500">
-          <span className="w-1.5 h-6 bg-primary-600 rounded-full"></span>
+      <div className="rounded-2xl p-6 shadow-sm border border-gray-100 glass-card" style={{ backgroundColor: config.sidebarBgColor || '#ffffff' }}>
+        <h3 className="text-sm font-black mb-6 flex items-center gap-2 uppercase tracking-[0.2em] text-gray-500">
+          <span className="w-1.5 h-6 rounded-full" style={{ backgroundColor: config.accentColor || '#2563eb' }}></span>
           Chuyên mục
         </h3>
         <div className="flex flex-wrap gap-2">
@@ -97,7 +108,21 @@ const Sidebar: React.FC<SidebarProps> = ({ posts, navigateTo, currentUser, onLog
             <button 
               key={label} 
               onClick={() => onSelectLabel && onSelectLabel(label)}
-              className="px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 hover:border-primary-500 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/30 text-gray-600 dark:text-gray-400 text-[11px] font-black rounded-lg transition-all uppercase tracking-widest shadow-sm"
+              className="px-4 py-2 bg-gray-50 border border-gray-100 hover:text-white text-gray-600 text-[11px] font-black rounded-lg transition-all uppercase tracking-widest shadow-sm"
+              style={{ 
+                '--tw-hover-bg-color': config.accentColor || '#2563eb',
+                '--tw-hover-border-color': config.accentColor || '#2563eb'
+              } as any}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = config.accentColor || '#2563eb';
+                e.currentTarget.style.borderColor = config.accentColor || '#2563eb';
+                e.currentTarget.style.color = '#fff';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '';
+                e.currentTarget.style.borderColor = '';
+                e.currentTarget.style.color = '';
+              }}
             >
               {label}
             </button>
@@ -105,17 +130,17 @@ const Sidebar: React.FC<SidebarProps> = ({ posts, navigateTo, currentUser, onLog
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 glass-card">
-        <h3 className="text-sm font-black mb-5 flex items-center gap-2 dark:text-white uppercase tracking-[0.2em] text-gray-500">
-          <span className="w-1.5 h-6 bg-primary-600 rounded-full"></span>
+      <div className="rounded-2xl p-6 shadow-sm border border-gray-100 glass-card" style={{ backgroundColor: config.sidebarBgColor || '#ffffff' }}>
+        <h3 className="text-sm font-black mb-5 flex items-center gap-2 uppercase tracking-[0.2em] text-gray-500">
+          <span className="w-1.5 h-6 rounded-full" style={{ backgroundColor: config.accentColor || '#2563eb' }}></span>
           {config.sidebarStatsTitle}
         </h3>
         <div className="grid grid-cols-1 gap-4">
-          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
+          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tổng lượt xem:</span>
-            <span className="text-lg font-black text-primary-600">1,245,890</span>
+            <span className="text-lg font-black" style={{ color: config.accentColor || '#2563eb' }}>1,245,890</span>
           </div>
-          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
+          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Đang online:</span>
             <span className="text-lg font-black text-orange-500 flex items-center gap-2">
               <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></span>

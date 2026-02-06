@@ -33,13 +33,15 @@ export interface User {
 export interface MenuItem {
   id: string;
   label: string;
-  targetLabel?: string; // If it's a category filter or tool identifier
+  icon?: string; // Emoji hoặc mã SVG
+  targetLabel?: string;
   isDropdown?: boolean;
   subItems?: { label: string; targetLabel: string }[];
 }
 
 export interface SiteConfig {
   logoUrl: string | null;
+  footerLogoUrl: string | null;
   siteName: string;
   // Ads slots
   adsenseScript: string;
@@ -59,6 +61,13 @@ export interface SiteConfig {
   homeLatestTitle: string;
   // Dynamic Menu
   menuItems: MenuItem[];
+  // Color Customization
+  headerBgColor?: string;
+  menuTextColor?: string;
+  footerBgColor?: string;
+  sidebarBgColor?: string;
+  accentColor?: string; // Mặc định là màu cam theo mẫu mới
+  menuActiveBorderColor?: string;
 }
 
 export enum Page {

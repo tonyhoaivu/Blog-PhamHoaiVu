@@ -10,7 +10,7 @@ interface PostCardProps {
 const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
   return (
     <article 
-      className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden cursor-pointer group flex flex-col h-full border border-slate-100 hover:-translate-y-1"
+      className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden cursor-pointer group flex flex-col h-full border border-sky-50 hover:-translate-y-1"
       onClick={onClick}
     >
       <div className="relative aspect-video overflow-hidden">
@@ -21,7 +21,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
         />
         <div className="absolute top-4 left-4 flex gap-2">
           {post.labels.slice(0, 1).map(label => (
-            <span key={label} className="bg-blue-600 text-white text-[10px] font-black px-3 py-1.5 rounded-lg shadow-lg uppercase tracking-wider">
+            <span key={label} className="bg-sky-600 text-white text-[10px] font-black px-3 py-1.5 rounded-lg shadow-lg uppercase tracking-wider">
               {label}
             </span>
           ))}
@@ -34,14 +34,14 @@ const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
           </svg>
           <span>{post.date}</span>
         </div>
-        <h3 className="font-black text-lg leading-tight mb-4 group-hover:text-blue-600 transition-colors line-clamp-2 text-slate-900 uppercase tracking-tighter">
+        <h3 className="font-black text-lg leading-tight mb-4 group-hover:text-sky-600 transition-colors line-clamp-2 text-slate-900 uppercase tracking-tighter">
           {post.title}
         </h3>
         <p className="text-slate-500 text-[13px] line-clamp-3 mb-6 leading-relaxed font-medium">
           {post.summary}
         </p>
         <div className="mt-auto flex justify-between items-center pt-5 border-t border-slate-50">
-          <span className="text-blue-600 text-[11px] font-black uppercase tracking-widest flex items-center gap-1 group-hover:gap-2 transition-all">
+          <span className="text-sky-600 text-[11px] font-black uppercase tracking-widest flex items-center gap-1 group-hover:gap-2 transition-all">
             Đọc bài viết
             <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />

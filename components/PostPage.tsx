@@ -69,11 +69,27 @@ const PostPage: React.FC<PostPageProps> = ({ post, allPosts, navigateTo, current
               </div>
             </div>
 
+            <AdSlot rawHtml={config.adsHeader} className="mb-8" />
+
             <div className="prose prose-slate max-w-none mb-16 text-lg font-medium leading-relaxed" dangerouslySetInnerHTML={{ __html: richContent }} />
 
-            {post.downloads && post.downloads.map((dl, idx) => (
-              <DownloadSection key={idx} download={dl} />
-            ))}
+            <AdSlot rawHtml={config.adsBelowContent} className="my-10" />
+
+            {post.downloads && post.downloads.length > 0 && (
+              <div className="space-y-8">
+                <div className="text-center py-4 bg-sky-50 rounded-2xl border-2 border-dashed border-sky-100">
+                   <p className="text-[10px] font-black text-sky-600 uppercase tracking-[0.3em]">DANH SÁCH TỆP TIN TẢI XUỐNG</p>
+                </div>
+                {post.downloads.map((dl, idx) => (
+                  <div key={idx} className="space-y-6">
+                    <DownloadSection download={dl} config={config} />
+                    <AdSlot rawHtml={config.adsBelowContent} className="opacity-60" />
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            <AdSlot rawHtml={config.adsBelowContent} className="mt-10" />
           </div>
         </div>
       </article>

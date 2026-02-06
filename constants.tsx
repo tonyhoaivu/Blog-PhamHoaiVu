@@ -68,51 +68,128 @@ export const INITIAL_POSTS: Post[] = [
     ]
   },
   {
-    id: 'driver-hp-m15w-laserjet',
-    title: 'Driver Máy In HP LaserJet M15w - Bản cài đặt ổn định nhất',
-    slug: 'driver-hp-m15w-laserjet',
-    summary: 'Bộ Driver đầy đủ tính năng cho máy in HP M15w. Hỗ trợ in không dây, tương thích hoàn toàn với Windows 10 và 11.',
+    id: 'win-7-ultimate-clean-msdn',
+    title: 'Windows 7 Ultimate SP1 - Bản ISO nguyên gốc từ Microsoft',
+    slug: 'win-7-ultimate-clean-msdn',
+    summary: 'Tổng hợp link tải Windows 7 Ultimate SP1 bản sạch nhất, không chỉnh sửa, cực kỳ ổn định cho các dòng máy đời cũ.',
     content: `
-      <h2>Driver HP LaserJet M15w</h2>
-      <p>Cung cấp bộ cài đặt đầy đủ từ HP, giúp máy tính nhận diện máy in nhanh chóng qua cổng USB hoặc WiFi.</p>
+      <h2>Windows 7 Ultimate SP1 MSDN</h2>
+      <p>Đây là bản ISO chuẩn nhất dành cho kỹ thuật viên và người dùng muốn sự ổn định tuyệt đối. Đã bao gồm gói cập nhật SP1.</p>
+      <h3>Thông số kỹ thuật</h3>
+      <p>Bản nguyên gốc từ Microsoft MSDN, không qua chỉnh sửa hay thêm bớt bất kỳ thành phần nào.</p>
     `,
     author: 'Phạm Hoài Vũ',
-    date: '2024-11-20',
-    labels: ['Máy In', 'Driver PC'],
-    thumbnail: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?q=80&w=800&auto=format&fit=crop',
+    date: '2024-05-20',
+    labels: ['Win 7', 'Thủ thuật'],
+    thumbnail: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop',
     popular: false,
-    views: 4500,
+    views: 5200,
     downloads: [
       {
-        version: 'Full Software v46.4',
-        size: '150 MB',
-        md5: 'HP-DRIVER-MD5',
-        freeLink: 'https://support.hp.com',
+        version: 'Ultimate SP1 x64',
+        size: '3.1 GB',
+        md5: 'WIN7-MSDN-MD5',
+        freeLink: 'https://drive.google.com/win7',
         proLink: 'https://phamhoaivu.com/donate'
       }
     ]
   },
   {
-    id: 'pubg-mobile-config-2024',
-    title: 'Config PUBG Mobile 120FPS - Mượt mà cho máy cấu hình yếu',
-    slug: 'pubg-mobile-config-2024',
-    summary: 'Chia sẻ bộ cài đặt tối ưu cho PUBG Mobile, giúp mở khóa 120FPS và giảm giật lag hiệu quả.',
+    id: 'win-8-1-pro-optimized',
+    title: 'Windows 8.1 Pro - Bản tối ưu cho Laptop đời cũ',
+    slug: 'win-8-1-pro-optimized',
+    summary: 'Chia sẻ bản cài đặt Windows 8.1 Professional đã được tối ưu hóa, lược bỏ telemetry giúp máy chạy nhanh hơn 20%.',
     content: `
-      <h2>Tối ưu PUBG Mobile 120FPS</h2>
-      <p>Bản config mới nhất hỗ trợ các dòng máy Android tầm trung có thể trải nghiệm mượt mà không nóng máy.</p>
+      <h2>Windows 8.1 Pro Optimized</h2>
+      <p>Lựa chọn tuyệt vời giữa Windows 7 và Windows 10. Bản này chạy cực nhẹ trên các dòng máy dùng ổ HDD cũ.</p>
     `,
     author: 'Phạm Hoài Vũ',
-    date: '2024-11-10',
-    labels: ['Mobile Game', 'Thủ thuật'],
-    thumbnail: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop',
+    date: '2024-06-12',
+    labels: ['Win 8'],
+    thumbnail: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=800&auto=format&fit=crop',
     popular: false,
-    views: 3200,
+    views: 4100,
     downloads: [
       {
-        version: 'Config v3.0',
-        size: '5 MB',
-        md5: 'PUBG-CONFIG-MD5',
-        freeLink: 'https://mediafire.com/example',
+        version: 'Pro x64 Lite',
+        size: '2.8 GB',
+        md5: 'WIN8-LITE-MD5',
+        freeLink: 'https://fshare.vn/win8',
+        proLink: 'https://phamhoaivu.com/donate'
+      }
+    ]
+  },
+  {
+    id: 'win-10-pro-22h2-no-bloatware',
+    title: 'Windows 10 Pro 22H2 - Không App rác, mượt mà nhất 2024',
+    slug: 'win-10-pro-22h2-no-bloatware',
+    summary: 'Bản build Windows 10 ổn định nhất hiện nay. Đã lược bỏ toàn bộ bloatware, tắt các dịch vụ ngầm không cần thiết.',
+    content: `
+      <h2>Windows 10 Pro 22H2 Super Lite</h2>
+      <p>Nếu bạn chưa muốn lên Windows 11 vì lo ngại độ ổn định, đây là bản Windows 10 tốt nhất để làm việc và chơi game.</p>
+    `,
+    author: 'Phạm Hoài Vũ',
+    date: '2024-11-25',
+    labels: ['Win 10'],
+    thumbnail: 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?q=80&w=800&auto=format&fit=crop',
+    popular: true,
+    views: 12000,
+    downloads: [
+      {
+        version: 'Build 19045',
+        size: '4.1 GB',
+        md5: 'WIN10-22H2-MD5',
+        freeLink: 'https://mega.nz/win10',
+        proLink: 'https://phamhoaivu.com/donate'
+      }
+    ]
+  },
+  {
+    id: 'adobe-photoshop-2024-full',
+    title: 'Adobe Photoshop 2024 - Full bộ cài ổn định, hỗ trợ AI',
+    slug: 'adobe-photoshop-2024-full',
+    summary: 'Tải xuống Photoshop 2024 phiên bản mới nhất. Hướng dẫn cài đặt chi tiết, hoạt động mượt mà không lỗi.',
+    content: `
+      <h2>Adobe Photoshop 2024 Full</h2>
+      <p>Trải nghiệm các tính năng Generative Fill AI mới nhất từ Adobe ngay trên máy tính của bạn.</p>
+    `,
+    author: 'Phạm Hoài Vũ',
+    date: '2024-12-01',
+    labels: ['Software'],
+    thumbnail: 'https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=800&auto=format&fit=crop',
+    popular: true,
+    views: 7500,
+    downloads: [
+      {
+        version: 'v25.0 Full',
+        size: '3.5 GB',
+        md5: 'PS2024-MD5',
+        freeLink: 'https://drive.google.com/ps2024',
+        proLink: 'https://phamhoaivu.com/donate'
+      }
+    ]
+  },
+  {
+    id: 'easy-driverpack-7-24-full',
+    title: 'Easy DriverPack 7.24 - Tự động cài đặt Driver Offline',
+    slug: 'easy-driverpack-7-24-full',
+    summary: 'Bộ driver offline đầy đủ nhất cho mọi đời máy tính. Chỉ cần 1 click là máy bạn sẽ đầy đủ driver cần thiết.',
+    content: `
+      <h2>Easy DriverPack 7.24 Full Driver</h2>
+      <p>Giải pháp cứu cánh khi cài win xong mà không có mạng hoặc thiếu driver wifi, card màn hình.</p>
+    `,
+    author: 'Phạm Hoài Vũ',
+    date: '2024-12-05',
+    labels: ['Driver PC'],
+    thumbnail: 'https://images.unsplash.com/photo-1544006659-f0b21f04cb1d?q=80&w=800&auto=format&fit=crop',
+    popular: false,
+    views: 2900,
+    downloads: [
+      {
+        version: 'WanDrv 7.24',
+        size: '6.2 GB',
+        md5: 'DRV-724-MD5',
+        freeLink: 'https://fshare.vn/driver',
         proLink: 'https://phamhoaivu.com/donate'
       }
     ]

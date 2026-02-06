@@ -18,10 +18,12 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ posts, navigateTo, currentUser, onLogin, onLogout, config, activeLabel, onClearFilter, sidebarOpen }) => {
+  const accentColor = config.accentColor || '#0ea5e9';
+
   return (
     <div className={`grid grid-cols-1 ${sidebarOpen ? 'lg:grid-cols-10' : 'lg:grid-cols-1'} gap-12 transition-all duration-500`}>
       <div className={`${sidebarOpen ? 'lg:col-span-7' : 'lg:col-span-1 max-w-5xl mx-auto w-full'}`}>
-        <div className="mb-12 border-l-4 border-blue-600 pl-6 py-1">
+        <div className="mb-12 border-l-4 pl-6 py-1" style={{ borderColor: accentColor }}>
           <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tight leading-none">
             {activeLabel && activeLabel !== 'All' ? `CHUYÊN MỤC: ${activeLabel}` : config.homeLatestTitle}
           </h2>
@@ -41,9 +43,9 @@ const HomePage: React.FC<HomePageProps> = ({ posts, navigateTo, currentUser, onL
             ))}
           </div>
         ) : (
-          <div className="py-32 text-center bg-white rounded-[3rem] border-2 border-dashed border-slate-200 shadow-sm">
-             <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Không tìm thấy bài viết nào</p>
-             <button onClick={onClearFilter} className="mt-4 text-[11px] font-black text-blue-600 uppercase tracking-widest hover:underline">Xem tất cả bài viết</button>
+          <div className="py-32 text-center bg-white rounded-[3rem] border-2 border-dashed border-sky-100 shadow-sm">
+             <p className="text-sm font-black text-slate-400 uppercase tracking-[0.3em]">Không tìm thấy bài viết nào</p>
+             <button onClick={onClearFilter} className="mt-4 text-[11px] font-black uppercase tracking-widest hover:underline" style={{ color: accentColor }}>Xem tất cả bài viết</button>
           </div>
         )}
       </div>

@@ -17,16 +17,16 @@
                 extend: {
                     colors: {
                         primary: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            200: '#bbf7d0',
-                            300: '#86efac',
-                            400: '#4ade80',
-                            500: '#22c55e',
-                            600: '#16a34a',
-                            700: '#15803d',
-                            800: '#166534',
-                            900: '#14532d',
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
                         },
                     },
                     borderRadius: {
@@ -39,13 +39,13 @@
     <style>
         body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .glass-card {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
         .dark .glass-card {
-            background: rgba(31, 41, 55, 0.7);
+            background: rgba(15, 23, 42, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .hover-lift {
@@ -64,7 +64,7 @@
             height: 100%;
             pointer-events: none;
             z-index: 100;
-            opacity: 0.7;
+            opacity: 0.5;
         }
 
         .ql-container { border-bottom-left-radius: 1.5rem; border-bottom-right-radius: 1.5rem; font-family: 'Inter', sans-serif !important; border-color: #f3f4f6 !important; }
@@ -86,7 +86,7 @@
 }
 </script>
 </head>
-<body class="bg-[#f8fbfd] dark:bg-gray-950 transition-colors duration-200">
+<body class="bg-sky-50 dark:bg-slate-950 transition-colors duration-200">
     <canvas id="snow-canvas"></canvas>
     
     <div id="root"></div>
@@ -112,10 +112,10 @@
             reset() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height - canvas.height;
-                this.size = Math.random() * 2.5 + 1;
-                this.speed = Math.random() * 0.6 + 0.2;
-                this.wind = Math.random() * 0.3 - 0.15;
-                this.opacity = Math.random() * 0.6 + 0.3;
+                this.size = Math.random() * 2 + 1;
+                this.speed = Math.random() * 0.5 + 0.1;
+                this.wind = Math.random() * 0.2 - 0.1;
+                this.opacity = Math.random() * 0.4 + 0.2;
             }
             update() {
                 this.y += this.speed;
@@ -130,7 +130,7 @@
             }
         }
 
-        for (let i = 0; i < 180; i++) particles.push(new Particle());
+        for (let i = 0; i < 150; i++) particles.push(new Particle());
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);

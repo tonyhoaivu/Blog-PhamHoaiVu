@@ -31,57 +31,60 @@ const Header: React.FC<HeaderProps> = ({ navigateTo, currentUser, onLogout, logo
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const accentColor = config.accentColor || '#0ea5e9';
+
   return (
-    <header className="max-w-6xl mx-auto w-full sticky top-4 z-50">
-      <div className="bg-white/90 backdrop-blur-xl border border-white shadow-xl shadow-blue-500/5 rounded-[2.5rem] px-8 h-20 flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full shadow-md transition-all duration-300" style={{ backgroundColor: config.headerBgColor || '#ffffff', borderBottom: `3px solid ${accentColor}` }}>
+      <div className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between max-w-7xl">
         
-        {/* LOGO & SIDEBAR TOGGLE */}
         <div className="flex items-center gap-4">
           <button 
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2.5 bg-slate-100 rounded-full hover:bg-blue-600 hover:text-white transition-all text-slate-500 lg:flex hidden"
+            className="p-2 hover:bg-sky-50 rounded-lg transition-colors text-slate-500 lg:flex hidden"
             title={sidebarOpen ? "Đóng Sidebar" : "Mở Sidebar"}
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d={sidebarOpen ? "M4 6h16M4 12h10M4 18h16" : "M4 6h16M4 12h16M4 18h16"} />
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
 
-          <div className="flex items-center gap-2 cursor-pointer group" onClick={() => {navigateTo(Page.HOME); onSelectLabel('All');}}>
+          <button 
+            onClick={() => {navigateTo(Page.HOME); onSelectLabel('All');}}
+            className="h-10 w-10 md:h-12 md:w-12 rounded-xl flex items-center justify-center transition-all shadow-sm"
+            style={{ backgroundColor: accentColor }}
+          >
+            <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+            </svg>
+          </button>
+
+          <div className="flex items-center gap-2 cursor-pointer group ml-1" onClick={() => {navigateTo(Page.HOME); onSelectLabel('All');}}>
             {logoUrl ? (
               <img src={logoUrl} alt="Logo" className="h-10 w-auto object-contain" />
             ) : (
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-black shadow-lg">V</div>
-                <div className="flex flex-col">
-                  <span className="font-black text-lg tracking-tighter text-slate-900 leading-none">Pham</span>
-                  <span className="font-black text-lg tracking-tighter text-blue-600 leading-none">HoaiVu</span>
-                </div>
+              <div className="flex flex-col">
+                <span className="font-black text-xl tracking-tighter text-slate-900 uppercase leading-none">PHẠM HOÀI VŨ</span>
+                <span className="text-[10px] font-bold tracking-[0.2em] text-sky-600 uppercase">Blog</span>
               </div>
             )}
           </div>
         </div>
 
-        {/* NAVIGATION */}
-        <nav className="hidden lg:flex items-center gap-4" ref={dropdownRef}>
-          {config.menuItems.map(item => (
+        <nav className="hidden lg:flex items-center h-full" ref={dropdownRef}>
+          {config.menuItems.filter(i => i.label !== 'TRANG CHỦ').map(item => (
             <div 
               key={item.id} 
-              className="relative"
+              className="relative h-full flex items-center"
               onMouseEnter={() => item.isDropdown && setActiveDropdown(item.id)}
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button 
                 onClick={() => {
-                  if (item.label === 'TRANG CHỦ') {
-                    navigateTo(Page.HOME);
-                    onSelectLabel('All');
-                  } else if (item.targetLabel) {
-                    onSelectLabel(item.targetLabel);
-                  }
+                  if (item.targetLabel) onSelectLabel(item.targetLabel);
                 }}
-                className={`px-4 py-2 text-[12px] font-bold uppercase tracking-widest transition-all flex items-center gap-1.5 rounded-full ${activeDropdown === item.id ? 'text-blue-600 bg-blue-50' : 'text-slate-700 hover:text-blue-600'}`}
+                className="px-5 py-2 text-[13px] font-bold uppercase tracking-wide transition-all flex items-center gap-2 text-slate-600 hover:text-sky-600 rounded-full hover:bg-sky-50/50"
               >
+                {item.icon && <span className="text-lg">{item.icon}</span>}
                 {item.label}
                 {item.isDropdown && (
                   <svg className={`w-3 h-3 transition-transform ${activeDropdown === item.id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7"/></svg>
@@ -89,7 +92,7 @@ const Header: React.FC<HeaderProps> = ({ navigateTo, currentUser, onLogout, logo
               </button>
 
               {item.isDropdown && activeDropdown === item.id && (
-                <div className="absolute top-full left-0 w-52 bg-white border border-slate-100 shadow-2xl py-4 rounded-[1.5rem] mt-2 animate-in fade-in slide-in-from-top-2">
+                <div className="absolute top-[80%] left-0 w-60 bg-white border border-sky-100 shadow-2xl py-3 rounded-2xl animate-in fade-in slide-in-from-top-2">
                   {item.subItems?.map((sub, idx) => (
                     <button 
                       key={idx} 
@@ -97,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({ navigateTo, currentUser, onLogout, logo
                         onSelectLabel(sub.targetLabel);
                         setActiveDropdown(null);
                       }}
-                      className="w-full text-left px-6 py-2.5 text-[13px] font-bold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-all"
+                      className="w-full text-left px-6 py-3 text-[12px] font-bold text-slate-600 hover:bg-sky-50 hover:text-sky-600 transition-all flex items-center justify-between"
                     >
                       {sub.label}
                     </button>
@@ -108,12 +111,22 @@ const Header: React.FC<HeaderProps> = ({ navigateTo, currentUser, onLogout, logo
           ))}
         </nav>
 
-        {/* ACTIONS */}
-        <div className="flex items-center gap-3">
-          {currentUser ? (
-            <button onClick={() => navigateTo(Page.ADMIN)} className="bg-blue-600 text-white px-6 py-2.5 rounded-full text-[11px] font-black uppercase tracking-widest hover:bg-blue-700 transition shadow-md">ADMIN</button>
-          ) : (
-            <button onClick={() => navigateTo(Page.LOGIN)} className="bg-slate-100 text-slate-600 px-6 py-2.5 rounded-full text-[11px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition shadow-md">Đăng Nhập</button>
+        <div className="flex items-center gap-4">
+          <div className="relative hidden md:block">
+            <input 
+              type="text" 
+              placeholder="Tìm kiếm..." 
+              className="bg-sky-50 border border-sky-100 rounded-xl px-4 py-2 text-xs text-slate-700 outline-none focus:border-sky-400 w-44 shadow-inner"
+            />
+            <button className="absolute right-3 top-1/2 -translate-y-1/2 text-sky-400">
+               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </button>
+          </div>
+
+          {currentUser && (
+            <button onClick={() => navigateTo(Page.ADMIN)} className="bg-sky-600 text-white px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-sky-700 transition shadow-lg shadow-sky-600/20">
+              QUẢN TRỊ
+            </button>
           )}
         </div>
       </div>
