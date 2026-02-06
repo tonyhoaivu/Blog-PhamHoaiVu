@@ -27,10 +27,13 @@ const SpecialChars: React.FC = () => {
     <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="bg-white dark:bg-gray-800 p-8 rounded-[3rem] shadow-2xl border border-gray-100 dark:border-gray-700">
         <div className="mb-10 text-center">
-          <h2 className="text-3xl font-black text-gray-800 dark:text-white uppercase tracking-tighter mb-2">
-            ✨ Ký Tự Đặc Biệt
-          </h2>
-          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tạo tên game, nghệ thuật chữ chuyên nghiệp</p>
+          <div className="inline-flex items-center gap-2 mb-2">
+            <span className="w-1.5 h-6 bg-blue-600 rounded-full"></span>
+            <h2 className="text-3xl font-black text-gray-800 dark:text-white uppercase tracking-tighter">
+              ✨ Phạm Hoài Vũ Ký Tự Đặc Biệt
+            </h2>
+          </div>
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Công cụ sáng tạo bởi Blog Phạm Hoài Vũ</p>
         </div>
 
         <div className="space-y-6">

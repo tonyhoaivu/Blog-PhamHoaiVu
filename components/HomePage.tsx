@@ -18,30 +18,19 @@ interface HomePageProps {
 
 const HomePage: React.FC<HomePageProps> = ({ posts, navigateTo, currentUser, onLogin, onLogout, config, activeLabel, onClearFilter }) => {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-10 gap-12">
       <div className="lg:col-span-7">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-          <div className="space-y-1">
-            <h2 className="text-2xl font-black flex items-center gap-3 dark:text-white uppercase tracking-tight">
-              <span className="w-3 h-10 bg-primary-600 rounded-lg shadow-lg shadow-primary-500/30"></span>
-              {activeLabel ? `Chuyên mục: ${activeLabel}` : config.homeLatestTitle}
-            </h2>
-            <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] ml-6">
-              {activeLabel ? `Hiển thị các bài viết thuộc nhãn ${activeLabel}` : `Bản tin công nghệ từ ${config.siteName}`}
-            </p>
-          </div>
-          {activeLabel && (
-            <button 
-              onClick={onClearFilter}
-              className="px-4 py-2 bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 text-[10px] font-black uppercase rounded-xl hover:bg-red-100 transition-all border border-red-100 dark:border-red-800"
-            >
-              Xóa lọc nhãn
-            </button>
-          )}
+        <div className="mb-12 border-l-4 border-cyan-500 pl-6 py-1">
+          <h2 className="text-3xl font-black text-white uppercase tracking-tight leading-none">
+            {activeLabel && activeLabel !== 'All' ? `CHUYÊN MỤC: ${activeLabel}` : config.homeLatestTitle}
+          </h2>
+          <p className="text-slate-500 text-[10px] mt-2 italic font-black uppercase tracking-widest">
+            {activeLabel ? `Khám phá tài nguyên trong danh mục ${activeLabel}` : `Tài nguyên công nghệ mới nhất từ ${config.siteName}`}
+          </p>
         </div>
         
         {config.adsHomePage && (
-          <div className="mb-10">
+          <div className="mb-12">
             <AdSlot rawHtml={config.adsHomePage} />
           </div>
         )}
@@ -57,33 +46,27 @@ const HomePage: React.FC<HomePageProps> = ({ posts, navigateTo, currentUser, onL
             ))}
           </div>
         ) : (
-          <div className="py-20 text-center bg-white dark:bg-gray-800 rounded-[3rem] border-4 border-dashed border-gray-100 dark:border-gray-700">
-             <div className="w-20 h-20 bg-gray-50 dark:bg-gray-900/50 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-10 h-10 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-             </div>
-             <p className="text-sm font-black text-gray-300 uppercase tracking-[0.3em]">Không tìm thấy bài viết nào</p>
+          <div className="py-32 text-center bg-slate-900/50 rounded-[3rem] border-2 border-dashed border-white/5">
+             <p className="text-xs font-black text-slate-600 uppercase tracking-[0.3em]">Không tìm thấy bài viết nào trong chuyên mục này</p>
+             <button onClick={onClearFilter} className="mt-4 text-[10px] font-black text-cyan-500 uppercase tracking-widest hover:underline">Xem tất cả bài viết</button>
           </div>
         )}
         
         {posts.length > 0 && (
-          <div className="mt-12 flex justify-center items-center gap-3">
-            <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-primary-600 transition-colors shadow-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
+          <div className="mt-16 flex justify-center items-center gap-3">
+            <button className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 text-slate-500 hover:text-cyan-400 transition-colors">
+              <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/></svg>
             </button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-primary-600 text-white font-black shadow-lg shadow-primary-500/30">1</button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-500 font-bold hover:bg-gray-50 shadow-sm">2</button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-400 hover:text-primary-600 transition-colors shadow-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-              </svg>
+            <button className="w-12 h-12 flex items-center justify-center rounded-2xl bg-cyan-600 text-white font-black shadow-xl shadow-cyan-600/30">1</button>
+            <button className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 text-slate-300 font-bold hover:bg-white/10">2</button>
+            <button className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 text-slate-500 hover:text-cyan-400 transition-colors">
+              <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/></svg>
             </button>
           </div>
         )}
       </div>
 
-      <div className="lg:col-span-3 space-y-8">
+      <div className="lg:col-span-3 space-y-12">
         <Sidebar 
           posts={posts} 
           navigateTo={navigateTo} 
@@ -91,7 +74,7 @@ const HomePage: React.FC<HomePageProps> = ({ posts, navigateTo, currentUser, onL
           onLogin={onLogin}
           onLogout={onLogout}
           config={config}
-          onSelectLabel={onClearFilter ? (l) => { onClearFilter(); navigateTo(Page.HOME); } : undefined}
+          onSelectLabel={activeLabel ? () => onClearFilter && onClearFilter() : undefined}
         />
       </div>
     </div>
