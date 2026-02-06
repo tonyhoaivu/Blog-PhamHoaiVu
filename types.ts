@@ -21,6 +21,8 @@ export interface DownloadInfo {
   sha1?: string;
   freeLink: string;
   proLink: string;
+  fileData?: string;
+  fileName?: string;
 }
 
 export interface User {
@@ -28,10 +30,35 @@ export interface User {
   role: 'admin' | 'user';
 }
 
+export interface MenuItem {
+  id: string;
+  label: string;
+  targetLabel?: string; // If it's a category filter or tool identifier
+  isDropdown?: boolean;
+  subItems?: { label: string; targetLabel: string }[];
+}
+
 export interface SiteConfig {
   logoUrl: string | null;
-  adsenseScript: string;
   siteName: string;
+  // Ads slots
+  adsenseScript: string;
+  adsSidebar: string;
+  adsHeader: string;
+  adsBelowContent: string;
+  adsHomePage: string;
+  // Custom decoration
+  customCss: string;
+  customJs: string;
+  // Layout Labels
+  sidebarNewTabLabel: string;
+  sidebarPopularTabLabel: string;
+  sidebarRandomTabLabel: string;
+  sidebarStatsTitle: string;
+  sidebarAdsTitle: string;
+  homeLatestTitle: string;
+  // Dynamic Menu
+  menuItems: MenuItem[];
 }
 
 export enum Page {
@@ -42,7 +69,9 @@ export enum Page {
   ABOUT = 'about',
   CONTACT = 'contact',
   SETTINGS = 'settings',
-  LOGIN = 'login'
+  LOGIN = 'login',
+  SPECIAL_CHARS = 'special_chars',
+  CREATE_IMAGE = 'create_image'
 }
 
 export interface TOCItem {

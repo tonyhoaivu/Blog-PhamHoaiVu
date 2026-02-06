@@ -39,6 +39,32 @@ const EditorPage: React.FC<EditorPageProps> = ({ post, onSave, onCancel }) => {
     setDownloads(newDownloads);
   };
 
+  const handleFileUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result as string;
+        const sizeInMb = (file.size / (1024 * 1024)).toFixed(2);
+        const sizeStr = parseFloat(sizeInMb) > 1000 
+          ? (file.size / (1024 * 1024 * 1024)).toFixed(2) + ' GB' 
+          : sizeInMb + ' MB';
+
+        const newDownloads = [...downloads];
+        newDownloads[index] = {
+          ...newDownloads[index],
+          version: file.name.split('.').slice(0, -1).join('.'),
+          size: sizeStr,
+          fileData: base64,
+          fileName: file.name,
+          md5: Math.random().toString(16).substring(2, 10).toUpperCase() + '... (Auto)'
+        };
+        setDownloads(newDownloads);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const removeDownload = (index: number) => {
     setDownloads(downloads.filter((_, i) => i !== index));
   };
@@ -65,10 +91,15 @@ const EditorPage: React.FC<EditorPageProps> = ({ post, onSave, onCancel }) => {
 
   const quillModules = {
     toolbar: [
-      [{ 'header': [2, 3, 4, false] }],
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      [{ 'font': [] }],
       ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'script': 'sub' }, { 'script': 'super' }],
       [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      ['link', 'image', 'code-block'],
+      [{ 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
+      ['blockquote', 'code-block'],
+      ['link', 'image', 'video'],
       ['clean']
     ],
   };
@@ -84,7 +115,7 @@ const EditorPage: React.FC<EditorPageProps> = ({ post, onSave, onCancel }) => {
              <h2 className="text-2xl font-black dark:text-white uppercase tracking-tighter">
                {post ? 'Cập Nhật Bài Viết' : 'Soạn Bài Viết Mới'}
              </h2>
-             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Môi trường soạn thảo chuyên nghiệp v3.0</p>
+             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Môi trường soạn thảo đa năng Premium</p>
            </div>
         </div>
         <div className="flex gap-3">
@@ -95,7 +126,6 @@ const EditorPage: React.FC<EditorPageProps> = ({ post, onSave, onCancel }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-8 space-y-8">
-          {/* Main Title Input */}
           <div className="bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm space-y-6">
              <div className="space-y-2">
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Tiêu đề bài đăng</label>
@@ -119,12 +149,11 @@ const EditorPage: React.FC<EditorPageProps> = ({ post, onSave, onCancel }) => {
              </div>
           </div>
 
-          {/* Content Editor */}
           <div className="bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
              <div className="px-8 py-5 bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-700 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                     <span className="w-2 h-2 bg-primary-500 rounded-full"></span>
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Nội dung chi tiết</span>
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Nội dung chi tiết (Editor Đa Năng)</span>
                 </div>
                 <button onClick={() => setIsCodeView(!isCodeView)} className="text-[9px] font-black bg-white dark:bg-gray-800 border dark:border-gray-700 px-4 py-2 rounded-xl text-gray-500 uppercase tracking-widest hover:bg-primary-50 hover:text-primary-600 transition-all shadow-sm">
                   {isCodeView ? 'Chế độ Trực Quan' : 'Chỉnh sửa HTML'}
@@ -137,27 +166,26 @@ const EditorPage: React.FC<EditorPageProps> = ({ post, onSave, onCancel }) => {
                   className="w-full h-[600px] p-8 font-mono text-sm bg-gray-900 text-green-400 outline-none resize-none"
                 />
              ) : (
-                <div className="h-[600px] prose dark:prose-invert max-w-none">
+                <div className="h-[650px] dark:bg-gray-800">
                   <ReactQuill 
                     theme="snow" 
                     value={content} 
                     onChange={setContent} 
                     modules={quillModules}
-                    className="h-[520px]" 
+                    className="h-[550px] dark:text-white" 
                   />
                 </div>
              )}
           </div>
 
-          {/* Download Config Section */}
           <div className="bg-white dark:bg-gray-800 p-10 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm space-y-8">
              <div className="flex justify-between items-center border-b dark:border-gray-700 pb-6">
                 <h3 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-[0.2em] flex items-center gap-3">
                   <div className="w-2 h-8 bg-red-600 rounded-full shadow-lg shadow-red-500/20"></div>
-                  Cấu hình khu vực tải tệp
+                  Cấu hình tải tệp (Hỗ trợ Upload)
                 </h3>
                 <button type="button" onClick={handleAddDownload} className="text-[9px] font-black bg-red-50 dark:bg-red-900/20 text-red-600 px-6 py-3 rounded-2xl uppercase tracking-widest hover:bg-red-100 transition-all border border-red-100 dark:border-red-800 shadow-sm">
-                   + Thêm link tải mới
+                   + Thêm mục tải mới
                 </button>
              </div>
 
@@ -167,9 +195,19 @@ const EditorPage: React.FC<EditorPageProps> = ({ post, onSave, onCancel }) => {
                     <button type="button" onClick={() => removeDownload(idx)} className="absolute -top-3 -right-3 w-10 h-10 bg-white dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-2xl flex items-center justify-center text-gray-300 hover:text-red-600 hover:border-red-200 shadow-lg transition-all opacity-0 group-hover:opacity-100">
                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     </button>
+
+                    <div className="mb-6 flex items-center gap-4">
+                        <label className="flex-grow cursor-pointer bg-white dark:bg-gray-800 border-2 border-primary-500/30 dark:border-primary-500/20 hover:bg-primary-50 dark:hover:bg-primary-900/10 py-4 rounded-2xl text-center transition-all">
+                            <input type="file" className="hidden" onChange={(e) => handleFileUpload(idx, e)} />
+                            <span className="text-[10px] font-black text-primary-600 uppercase tracking-widest">
+                                {dl.fileData ? `Đã tải lên: ${dl.fileName}` : '📁 TẢI TỆP LÊN TRỰC TIẾP (TỰ ĐIỀN THÔNG TIN)'}
+                            </span>
+                        </label>
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
                        <div className="space-y-2">
-                          <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Phiên bản</label>
+                          <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Phiên bản / Tên file</label>
                           <input value={dl.version} onChange={e => updateDownload(idx, 'version', e.target.value)} className="w-full px-5 py-4 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 text-xs font-bold dark:text-white shadow-sm" placeholder="v11.1 Pro" />
                        </div>
                        <div className="space-y-2">
@@ -178,61 +216,47 @@ const EditorPage: React.FC<EditorPageProps> = ({ post, onSave, onCancel }) => {
                        </div>
                        <div className="space-y-2">
                           <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Mã MD5</label>
-                          <input value={dl.md5} onChange={e => updateDownload(idx, 'md5', e.target.value)} className="w-full px-5 py-4 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 text-[10px] font-mono dark:text-gray-300 shadow-sm" placeholder="Check mã MD5 tệp..." />
+                          <input value={dl.md5} onChange={e => updateDownload(idx, 'md5', e.target.value)} className="w-full px-5 py-4 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 text-[10px] font-mono dark:text-gray-300 shadow-sm" placeholder="Mã bảo mật tệp..." />
                        </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                        <div className="space-y-2">
-                          <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Liên kết tải xuống (Free)</label>
-                          <input value={dl.freeLink} onChange={e => updateDownload(idx, 'freeLink', e.target.value)} className="w-full px-5 py-4 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 text-[10px] text-blue-600 font-bold shadow-sm" placeholder="Link Drive, Fshare, Mega..." />
+                          <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Link tải (Nếu không upload tệp)</label>
+                          <input value={dl.freeLink} onChange={e => updateDownload(idx, 'freeLink', e.target.value)} className="w-full px-5 py-4 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 text-[10px] text-blue-600 font-bold shadow-sm" placeholder="Link Drive, Fshare..." />
                        </div>
                        <div className="space-y-2">
-                          <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Liên kết mua (Premium)</label>
-                          <input value={dl.proLink} onChange={e => updateDownload(idx, 'proLink', e.target.value)} className="w-full px-5 py-4 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 text-[10px] text-green-600 font-bold shadow-sm" placeholder="Link Donate hoặc Mua hàng..." />
+                          <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Link mua Premium (Tùy chọn)</label>
+                          <input value={dl.proLink} onChange={e => updateDownload(idx, 'proLink', e.target.value)} className="w-full px-5 py-4 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 text-[10px] text-green-600 font-bold shadow-sm" placeholder="Link Donate hoặc Mua bản quyền..." />
                        </div>
                     </div>
                   </div>
                 ))}
-                {downloads.length === 0 && (
-                  <div className="py-20 text-center bg-gray-50/50 dark:bg-gray-900/50 rounded-[2.5rem] border-4 border-dashed border-gray-100 dark:border-gray-800">
-                     <div className="w-16 h-16 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
-                        <svg className="w-8 h-8 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                     </div>
-                     <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">Khu vực tải file đang trống</p>
-                  </div>
-                )}
              </div>
           </div>
         </div>
 
         <div className="lg:col-span-4 space-y-8">
-           {/* Sidebar Options */}
            <div className="bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm space-y-8 sticky top-24">
               <div className="space-y-4">
                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">Ảnh đại diện bài đăng</label>
                  <div className="aspect-[16/10] rounded-3xl overflow-hidden bg-gray-50 border-2 border-gray-50 dark:border-gray-700 relative group shadow-sm">
                     <img src={thumbnail} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="" />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
-                       <span className="text-[9px] font-black text-white border-2 border-white/50 px-5 py-2.5 rounded-2xl uppercase tracking-widest backdrop-blur-sm">Xem chi tiết ảnh</span>
-                    </div>
                  </div>
-                 <input value={thumbnail} onChange={e => setThumbnail(e.target.value)} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-900 border dark:border-gray-700 rounded-2xl outline-none focus:border-primary-500 text-[10px] font-bold dark:text-gray-300 shadow-inner" placeholder="Dán link ảnh tại đây (imgur, unsplash...)" />
+                 <input value={thumbnail} onChange={e => setThumbnail(e.target.value)} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-900 border dark:border-gray-700 rounded-2xl outline-none focus:border-primary-500 text-[10px] font-bold dark:text-gray-300 shadow-inner" placeholder="Link ảnh (imgur, unsplash...)" />
               </div>
 
               <div className="space-y-4">
-                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">Mô tả tóm tắt (SEO Meta)</label>
-                 <textarea value={summary} onChange={e => setSummary(e.target.value)} rows={5} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-900 border dark:border-gray-700 rounded-[2rem] outline-none focus:border-primary-500 text-xs font-medium dark:text-gray-300 resize-none shadow-inner" placeholder="Tóm tắt ngắn để Google và người dùng dễ dàng tìm thấy bạn..." />
+                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">Mô tả tóm tắt</label>
+                 <textarea value={summary} onChange={e => setSummary(e.target.value)} rows={5} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-900 border dark:border-gray-700 rounded-[2rem] outline-none focus:border-primary-500 text-xs font-medium dark:text-gray-300 resize-none shadow-inner" placeholder="Tóm tắt ngắn..." />
               </div>
 
               <div className="space-y-4">
                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">Nhãn bài viết</label>
-                 <input value={labels} onChange={e => setLabels(e.target.value)} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-900 border dark:border-gray-700 rounded-2xl outline-none focus:border-primary-500 text-xs font-black uppercase tracking-widest dark:text-white shadow-inner" placeholder="WINDOWS, SOFTWARE, TOOLS..." />
-                 <p className="text-[9px] text-gray-400 italic pl-2 opacity-80">Ghi chú: Mỗi nhãn phân cách bằng dấu phẩy (,)</p>
+                 <input value={labels} onChange={e => setLabels(e.target.value)} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-900 border dark:border-gray-700 rounded-2xl outline-none focus:border-primary-500 text-xs font-black uppercase tracking-widest dark:text-white shadow-inner" placeholder="WINDOWS, SOFTWARE..." />
               </div>
 
               <div className="pt-6 border-t dark:border-gray-700 space-y-4">
                  <button onClick={handleSubmit} className="w-full bg-primary-600 text-white py-5 rounded-[2rem] font-black text-xs uppercase tracking-widest shadow-2xl shadow-primary-500/30 hover:bg-primary-700 transition-all hover:-translate-y-1 active:scale-95">XUẤT BẢN NGAY</button>
-                 <button onClick={onCancel} className="w-full bg-gray-50 dark:bg-gray-700 text-gray-400 dark:text-gray-400 py-4 rounded-[2rem] font-black text-[10px] uppercase tracking-widest hover:bg-gray-100 transition-all">LƯU NHÁP HỆ THỐNG</button>
               </div>
            </div>
         </div>

@@ -22,7 +22,7 @@ export const INITIAL_POSTS: Post[] = [
     `,
     author: 'Phạm Hoài Vũ',
     date: '2024-11-01',
-    labels: ['USB Boot', 'Premium', 'Tools'],
+    labels: ['BOOT USB', 'Thủ thuật'],
     thumbnail: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?q=80&w=800&auto=format&fit=crop',
     popular: true,
     views: 15420,
@@ -52,7 +52,7 @@ export const INITIAL_POSTS: Post[] = [
     `,
     author: 'Phạm Hoài Vũ',
     date: '2024-10-15',
-    labels: ['Windows 11', 'Operating System', 'ISO'],
+    labels: ['Win 11'],
     thumbnail: 'https://images.unsplash.com/photo-1624555130581-1d9cca783bc0?q=80&w=800&auto=format&fit=crop',
     popular: true,
     views: 8940,
@@ -68,66 +68,52 @@ export const INITIAL_POSTS: Post[] = [
     ]
   },
   {
-    id: 'office-2021-ltsc-aio',
-    title: 'Microsoft Office 2021 LTSC AIO - Cài đặt tự động 1 click',
-    slug: 'office-2021-ltsc-aio',
-    summary: 'Bộ cài Office 2021 đầy đủ các ứng dụng Word, Excel, PowerPoint. Tích hợp công cụ kích hoạt bản quyền tự động vĩnh viễn.',
+    id: 'driver-hp-m15w-laserjet',
+    title: 'Driver Máy In HP LaserJet M15w - Bản cài đặt ổn định nhất',
+    slug: 'driver-hp-m15w-laserjet',
+    summary: 'Bộ Driver đầy đủ tính năng cho máy in HP M15w. Hỗ trợ in không dây, tương thích hoàn toàn với Windows 10 và 11.',
     content: `
-      <h2>Office 2021 LTSC Pro Plus</h2>
-      <p>Phiên bản Office ổn định nhất hiện nay dành cho dân văn phòng. Không cần đăng nhập tài khoản Microsoft, sử dụng offline hoàn toàn thoải mái.</p>
-      <h3>Bộ cài bao gồm:</h3>
-      <ul>
-        <li>Word 2021</li>
-        <li>Excel 2021 (hỗ trợ hàm mới)</li>
-        <li>PowerPoint 2021</li>
-        <li>Outlook, Access, Publisher...</li>
-      </ul>
-      <p>Lưu ý: Tắt Windows Defender trước khi giải nén để tránh bị xóa file kích hoạt.</p>
+      <h2>Driver HP LaserJet M15w</h2>
+      <p>Cung cấp bộ cài đặt đầy đủ từ HP, giúp máy tính nhận diện máy in nhanh chóng qua cổng USB hoặc WiFi.</p>
     `,
     author: 'Phạm Hoài Vũ',
-    date: '2024-09-20',
-    labels: ['Office', 'Software', 'Tools'],
-    thumbnail: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=800&auto=format&fit=crop',
+    date: '2024-11-20',
+    labels: ['Máy In', 'Driver PC'],
+    thumbnail: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?q=80&w=800&auto=format&fit=crop',
     popular: false,
-    views: 12050,
+    views: 4500,
     downloads: [
       {
-        version: 'v2021.10 Update',
-        size: '3.5 GB',
-        md5: 'OFFICE2021MD5CHECK',
-        freeLink: 'https://mediafire.com/example',
+        version: 'Full Software v46.4',
+        size: '150 MB',
+        md5: 'HP-DRIVER-MD5',
+        freeLink: 'https://support.hp.com',
         proLink: 'https://phamhoaivu.com/donate'
       }
     ]
   },
   {
-    id: 'driver-easy-pro-2024',
-    title: 'DriverEasy Pro v5.8.1 Full - Tự động cập nhật Driver',
-    slug: 'driver-easy-pro-2024',
-    summary: 'Phần mềm tìm và tải Driver còn thiếu cho máy tính tốt nhất hiện nay. Cơ sở dữ liệu khổng lồ với hơn 8 triệu Driver.',
+    id: 'pubg-mobile-config-2024',
+    title: 'Config PUBG Mobile 120FPS - Mượt mà cho máy cấu hình yếu',
+    slug: 'pubg-mobile-config-2024',
+    summary: 'Chia sẻ bộ cài đặt tối ưu cho PUBG Mobile, giúp mở khóa 120FPS và giảm giật lag hiệu quả.',
     content: `
-      <h2>DriverEasy Pro 5.8.1</h2>
-      <p>Việc tìm kiếm Driver thủ công rất mất thời gian. Với DriverEasy Pro, bạn chỉ cần 1 click để quét và tải toàn bộ Driver cho Card màn hình, Chipset, Audio, Wifi...</p>
-      <h3>Tính năng bản Pro:</h3>
-      <ul>
-        <li>Tốc độ tải xuống cực nhanh.</li>
-        <li>Tự động tạo điểm khôi phục hệ thống trước khi cài.</li>
-        <li>Gỡ bỏ Driver cũ, lỗi thời.</li>
-      </ul>
+      <h2>Tối ưu PUBG Mobile 120FPS</h2>
+      <p>Bản config mới nhất hỗ trợ các dòng máy Android tầm trung có thể trải nghiệm mượt mà không nóng máy.</p>
     `,
     author: 'Phạm Hoài Vũ',
-    date: '2024-11-05',
-    labels: ['Software', 'Driver', 'Tools'],
-    thumbnail: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop',
+    date: '2024-11-10',
+    labels: ['Mobile Game', 'Thủ thuật'],
+    thumbnail: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop',
     popular: false,
-    views: 4500,
+    views: 3200,
     downloads: [
       {
-        version: 'v5.8.1 Full',
-        size: '15 MB',
-        md5: 'DRIVER-EASY-PRO-MD5',
-        freeLink: 'https://mega.nz/file/example',
-        proLink: 'https://drivereasy.com/buy'
+        version: 'Config v3.0',
+        size: '5 MB',
+        md5: 'PUBG-CONFIG-MD5',
+        freeLink: 'https://mediafire.com/example',
+        proLink: 'https://phamhoaivu.com/donate'
       }
     ]
   }

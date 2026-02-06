@@ -1,13 +1,14 @@
 
 import React, { useState, useMemo } from 'react';
-import { Post, Page } from '../types';
+import { Post, Page, SiteConfig } from '../types';
 
 interface SidebarTabsProps {
   posts: Post[];
   navigateTo: (page: Page, id?: string) => void;
+  config: SiteConfig;
 }
 
-const SidebarTabs: React.FC<SidebarTabsProps> = ({ posts, navigateTo }) => {
+const SidebarTabs: React.FC<SidebarTabsProps> = ({ posts, navigateTo, config }) => {
   const [activeTab, setActiveTab] = useState<'new' | 'popular' | 'random'>('new');
 
   const filteredPosts = useMemo(() => {
@@ -26,9 +27,9 @@ const SidebarTabs: React.FC<SidebarTabsProps> = ({ posts, navigateTo }) => {
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden glass-card">
       <div className="flex border-b dark:border-gray-700">
         {[
-          { label: 'MỚI NHẤT', key: 'new' },
-          { label: 'PHỔ BIẾN', key: 'popular' },
-          { label: 'NGẪU NHIÊN', key: 'random' }
+          { label: config.sidebarNewTabLabel, key: 'new' },
+          { label: config.sidebarPopularTabLabel, key: 'popular' },
+          { label: config.sidebarRandomTabLabel, key: 'random' }
         ].map((tab) => (
           <button
             key={tab.key}

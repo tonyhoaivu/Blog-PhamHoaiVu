@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Page, Post, TOCItem, User } from '../types';
+import { Page, Post, TOCItem, User, SiteConfig } from '../types';
 import DownloadSection from './DownloadSection';
 import Sidebar from './Sidebar';
 import PostCard from './PostCard';
@@ -13,10 +13,12 @@ interface PostPageProps {
   currentUser: User | null;
   onLogin: (user: User) => void;
   onLogout: () => void;
+  config: SiteConfig;
 }
 
-const PostPage: React.FC<PostPageProps> = ({ post, allPosts, navigateTo, currentUser, onLogin, onLogout }) => {
+const PostPage: React.FC<PostPageProps> = ({ post, allPosts, navigateTo, currentUser, onLogin, onLogout, config }) => {
   const [toc, setToc] = useState<TOCItem[]>([]);
+  const postUrl = typeof window !== 'undefined' ? window.location.href : '';
 
   useEffect(() => {
     const parser = new DOMParser();
@@ -47,10 +49,17 @@ const PostPage: React.FC<PostPageProps> = ({ post, allPosts, navigateTo, current
       .slice(0, 3);
   }, [allPosts, post]);
 
+  const shareLinks = [
+    { name: 'Facebook', color: 'bg-[#1877f2]', icon: 'FB', url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}` },
+    { name: 'Zalo', color: 'bg-[#0068ff]', icon: 'Z', url: `https://zalo.me/s/qr-share/?url=${encodeURIComponent(postUrl)}` },
+    { name: 'Line', color: 'bg-[#00c300]', icon: 'L', url: `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(postUrl)}` },
+    { name: 'Telegram', color: 'bg-[#0088cc]', icon: 'T', url: `https://t.me/share/url?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(post.title)}` },
+    { name: 'Twitter', color: 'bg-[#1da1f2]', icon: 'X', url: `https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(post.title)}` },
+  ];
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      {/* Main Content */}
-      <article className="lg:col-span-8 space-y-8">
+    <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
+      <article className="lg:col-span-7 space-y-8">
         <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden glass-card">
           <div className="relative aspect-[21/9] overflow-hidden">
             <img 
@@ -67,7 +76,7 @@ const PostPage: React.FC<PostPageProps> = ({ post, allPosts, navigateTo, current
                   </span>
                 ))}
               </div>
-              <h1 className="text-2xl md:text-4xl font-black text-white leading-tight drop-shadow-md">
+              <h1 className="text-2xl md:text-4xl font-black text-white leading-tight drop-shadow-md uppercase tracking-tighter">
                 {post.title}
               </h1>
             </div>
@@ -93,7 +102,6 @@ const PostPage: React.FC<PostPageProps> = ({ post, allPosts, navigateTo, current
               </div>
             </div>
 
-            {/* Table of Contents */}
             {toc.length > 0 && (
               <div className="mb-10 p-6 bg-gray-50 dark:bg-gray-900/40 rounded-3xl border border-gray-100 dark:border-gray-700">
                 <h4 className="font-black mb-5 flex items-center gap-3 uppercase text-xs tracking-[0.2em] text-gray-500">
@@ -120,38 +128,55 @@ const PostPage: React.FC<PostPageProps> = ({ post, allPosts, navigateTo, current
               </div>
             )}
 
-            {/* Post Content */}
             <div 
               className="prose dark:prose-invert max-w-none mb-12 text-lg"
               dangerouslySetInnerHTML={{ __html: richContent }}
             />
 
-            {/* AdSlot Before Downloads */}
-            <div className="my-10">
-               <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center mb-2">Quảng cáo tài trợ</div>
-               <AdSlot slot="content-above-download" />
-            </div>
+            {/* Content Ad Slot */}
+            {config.adsBelowContent && (
+               <div className="my-12">
+                  <AdSlot rawHtml={config.adsBelowContent} />
+               </div>
+            )}
 
-            {/* Specific Download Section */}
             {post.downloads && post.downloads.map((dl, idx) => (
               <DownloadSection key={idx} download={dl} />
             ))}
 
-            {/* Share Area */}
-            <div className="mt-12 pt-8 border-t dark:border-gray-700 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex flex-wrap gap-2">
-                <span className="text-[10px] font-black mr-2 self-center text-gray-400 uppercase tracking-widest">TAGS:</span>
-                {post.labels.map(l => (
-                  <button key={l} className="px-4 py-1.5 bg-gray-50 dark:bg-gray-700 hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-600 text-[10px] font-black rounded-lg transition-colors uppercase tracking-wider border border-transparent hover:border-primary-100">
-                    #{l}
-                  </button>
-                ))}
+            <div className="mt-12 pt-8 border-t dark:border-gray-700">
+              <div className="flex flex-col gap-6">
+                 <div>
+                   <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4">CHIA SẺ BÀI VIẾT</h4>
+                   <div className="flex flex-wrap gap-3">
+                      {shareLinks.map(link => (
+                        <a 
+                          key={link.name} 
+                          href={link.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className={`${link.color} text-white px-4 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:scale-105 transition-all shadow-lg active:scale-95`}
+                        >
+                          <span className="text-xs">{link.icon}</span>
+                          {link.name}
+                        </a>
+                      ))}
+                   </div>
+                 </div>
+
+                 <div className="flex flex-wrap gap-2">
+                    <span className="text-[10px] font-black mr-2 self-center text-gray-400 uppercase tracking-widest">TAGS:</span>
+                    {post.labels.map(l => (
+                      <button key={l} className="px-4 py-1.5 bg-gray-50 dark:bg-gray-700 hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-600 text-[10px] font-black rounded-lg transition-colors uppercase tracking-wider border border-transparent hover:border-primary-100">
+                        #{l}
+                      </button>
+                    ))}
+                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Related Posts */}
         {relatedPosts.length > 0 && (
           <div className="space-y-6">
             <h3 className="text-xl font-black flex items-center gap-3 dark:text-white uppercase tracking-tight">
@@ -167,14 +192,14 @@ const PostPage: React.FC<PostPageProps> = ({ post, allPosts, navigateTo, current
         )}
       </article>
 
-      {/* Sidebar - Hide on small mobile, show on tablet up */}
-      <div className="lg:col-span-4 space-y-8 hidden lg:block">
+      <div className="lg:col-span-3 space-y-8 hidden lg:block">
         <Sidebar 
           posts={allPosts} 
           navigateTo={navigateTo} 
           currentUser={currentUser}
           onLogin={onLogin}
           onLogout={onLogout}
+          config={config}
         />
       </div>
     </div>

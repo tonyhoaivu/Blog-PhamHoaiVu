@@ -67,52 +67,6 @@
             opacity: 0.7;
         }
 
-        .side-banner {
-            position: fixed;
-            top: 100px;
-            width: 160px;
-            height: 600px;
-            z-index: 40;
-            display: none;
-            transition: opacity 0.3s;
-        }
-        @media (min-width: 1600px) {
-            .side-banner { display: block; }
-        }
-        .side-banner-left { left: 10px; }
-        .side-banner-right { right: 10px; }
-        
-        .vertical-text {
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-        }
-
-        .tet-decoration {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            width: 100px;
-            z-index: 30;
-            pointer-events: none;
-            display: none;
-        }
-        @media (min-width: 1400px) {
-            .tet-decoration { display: block; }
-        }
-        .tet-left { left: 0; background: linear-gradient(to right, rgba(239, 68, 68, 0.05), transparent); }
-        .tet-right { right: 0; background: linear-gradient(to left, rgba(239, 68, 68, 0.05), transparent); }
-
-        .tet-item {
-            position: absolute;
-            font-size: 32px;
-            animation: sway 4s ease-in-out infinite;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
-        }
-        @keyframes sway {
-            0%, 100% { transform: rotate(-8deg) translateY(0); }
-            50% { transform: rotate(8deg) translateY(-10px); }
-        }
-
         .ql-container { border-bottom-left-radius: 1.5rem; border-bottom-right-radius: 1.5rem; font-family: 'Inter', sans-serif !important; border-color: #f3f4f6 !important; }
         .ql-toolbar { border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem; border-color: #f3f4f6 !important; background: #f9fafb; padding: 1rem !important; }
         .dark .ql-toolbar { background: #111827; border-color: #374151 !important; }
@@ -121,37 +75,20 @@
 <script type="importmap">
 {
   "imports": {
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.3",
-    "vite": "https://esm.sh/vite@^7.3.1",
+    "react/": "https://esm.sh/react@^18.3.1/",
+    "react": "https://esm.sh/react@^18.3.1",
+    "react-dom/": "https://esm.sh/react-dom@^18.3.1/",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.3.4",
+    "vite": "https://esm.sh/vite@^6.0.1",
     "react-quill": "https://esm.sh/react-quill@^2.0.0"
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body class="bg-[#f8fbfd] dark:bg-gray-950 transition-colors duration-200">
     <canvas id="snow-canvas"></canvas>
     
-    <div class="tet-decoration tet-left">
-        <div class="tet-item" style="top: 5%; left: 20px;">🧧</div>
-        <div class="tet-item" style="top: 25%; left: 40px; animation-delay: 0.5s;">🏮</div>
-        <div class="tet-item" style="top: 45%; left: 15px; animation-delay: 1s;">🌸</div>
-        <div class="tet-item" style="top: 65%; left: 45px; animation-delay: 1.5s;">🏮</div>
-        <div class="tet-item" style="top: 85%; left: 25px; animation-delay: 2s;">🧧</div>
-    </div>
-    <div class="tet-decoration tet-right">
-        <div class="tet-item" style="top: 10%; right: 20px;">🏮</div>
-        <div class="tet-item" style="top: 30%; right: 40px; animation-delay: 0.7s;">🌸</div>
-        <div class="tet-item" style="top: 50%; right: 15px; animation-delay: 1.2s;">🧧</div>
-        <div class="tet-item" style="top: 70%; right: 45px; animation-delay: 1.8s;">🏮</div>
-        <div class="tet-item" style="top: 90%; right: 25px; animation-delay: 2.3s;">🧧</div>
-    </div>
-
     <div id="root"></div>
-    <!-- Cập nhật quan trọng: Vite yêu cầu chỉ định type="module" -->
     <script type="module" src="/index.tsx"></script>
 
     <script>
