@@ -19,8 +19,7 @@ interface PostPageProps {
 
 const PostPage: React.FC<PostPageProps> = ({ post, allPosts, navigateTo, currentUser, onLogin, onLogout, config, sidebarOpen }) => {
   const [toc, setToc] = useState<TOCItem[]>([]);
-  const postUrl = typeof window !== 'undefined' ? window.location.href : '';
-
+  
   useEffect(() => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(post.content, 'text/html');
@@ -46,8 +45,15 @@ const PostPage: React.FC<PostPageProps> = ({ post, allPosts, navigateTo, current
 
   return (
     <div className={`grid grid-cols-1 ${sidebarOpen ? 'lg:grid-cols-10' : 'lg:grid-cols-1'} gap-12 transition-all duration-500`}>
-      <article className={`${sidebarOpen ? 'lg:col-span-7' : 'lg:col-span-1 max-w-5xl mx-auto w-full'} space-y-8`}>
-        <div className="bg-white rounded-[2.5rem] shadow-xl shadow-blue-500/5 border border-white overflow-hidden">
+      <article className={`${sidebarOpen ? 'lg:col-span-7' : 'lg:col-span-1 max-w-5xl mx-auto w-full'} space-y-8 relative`}>
+        {/* Invisible Overlay for Content Protection */}
+        <div className="absolute inset-0 z-0 opacity-[0.01] pointer-events-none select-none flex flex-col justify-around py-20 text-slate-900 font-bold overflow-hidden">
+            {Array.from({length: 10}).map((_, i) => (
+                <div key={i} className="text-6xl whitespace-nowrap rotate-[-10deg]">COPYRIGHT BY PHAM HOAI VU BLOG</div>
+            ))}
+        </div>
+
+        <div className="bg-white rounded-[2.5rem] shadow-xl shadow-blue-500/5 border border-white overflow-hidden relative z-10">
           <div className="relative aspect-[21/9] overflow-hidden">
             <img src={post.thumbnail} alt={post.title} className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -71,7 +77,10 @@ const PostPage: React.FC<PostPageProps> = ({ post, allPosts, navigateTo, current
 
             <AdSlot rawHtml={config.adsHeader} className="mb-8" />
 
-            <div className="prose prose-slate max-w-none mb-16 text-lg font-medium leading-relaxed" dangerouslySetInnerHTML={{ __html: richContent }} />
+            <div 
+              className="prose prose-slate max-w-none mb-16 text-lg font-medium leading-relaxed" 
+              dangerouslySetInnerHTML={{ __html: richContent }} 
+            />
 
             <AdSlot rawHtml={config.adsBelowContent} className="my-10" />
 
@@ -89,7 +98,9 @@ const PostPage: React.FC<PostPageProps> = ({ post, allPosts, navigateTo, current
               </div>
             )}
             
-            <AdSlot rawHtml={config.adsBelowContent} className="mt-10" />
+            <div className="mt-16 pt-8 border-t border-slate-50 italic text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center">
+                Mọi hành vi sao chép nội dung trái phép đều vi phạm chính sách DMCA của Phạm Hoài Vũ Blog.
+            </div>
           </div>
         </div>
       </article>

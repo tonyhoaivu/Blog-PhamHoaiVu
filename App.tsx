@@ -99,7 +99,23 @@ const App: React.FC = () => {
     } else {
         setPosts(INITIAL_POSTS);
     }
-  }, []);
+
+    // Anti-Clone: Chặn hành động copy-paste và thêm bản quyền
+    const handleCopy = (e: ClipboardEvent) => {
+      if (currentUser?.role === 'admin') return; // Admin có quyền copy
+      
+      const selection = document.getSelection();
+      if (selection) {
+        const copyText = selection.toString();
+        const watermark = `\n\nNguồn: phamhoaivu.vercel.app - Bản quyền thuộc về Phạm Hoài Vũ Blog. Vui lòng ghi nguồn khi chia sẻ lại.`;
+        e.clipboardData?.setData('text/plain', copyText + watermark);
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener('copy', handleCopy);
+    return () => document.removeEventListener('copy', handleCopy);
+  }, [currentUser]);
 
   useEffect(() => {
     localStorage.setItem('phv_sidebar_state', JSON.stringify(sidebarOpen));
@@ -177,7 +193,14 @@ const App: React.FC = () => {
     : posts;
 
   return (
-    <div className="min-h-screen flex flex-col bg-sky-50 text-slate-800 transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-sky-50 text-slate-800 transition-colors duration-300 relative select-none">
+      {/* Invisible Layer for Security */}
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.02] overflow-hidden flex flex-wrap gap-20 p-20 select-none rotate-[-15deg]">
+        {Array.from({length: 20}).map((_, i) => (
+          <div key={i} className="text-4xl font-black whitespace-nowrap">PHAM HOAI VU SECURITY SYSTEM</div>
+        ))}
+      </div>
+
       <Header 
         isDarkMode={false}
         toggleDarkMode={() => {}}
@@ -193,7 +216,7 @@ const App: React.FC = () => {
         setSidebarOpen={setSidebarOpen}
       />
       
-      <main className="flex-grow container mx-auto px-4 md:px-6 py-8 max-w-7xl relative">
+      <main className="flex-grow container mx-auto px-4 md:px-6 py-8 max-w-7xl relative z-10">
         {currentPage === Page.LOGIN && (
           <LoginPage 
             onLogin={(u) => { 

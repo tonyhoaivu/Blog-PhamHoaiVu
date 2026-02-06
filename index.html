@@ -37,7 +37,24 @@
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden;
+            /* Chặn bôi đen nội dung toàn trang */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* Cho phép bôi đen trong các ô nhập liệu của Admin */
+        input, textarea, [contenteditable="true"], .prose code {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+        }
+
         .glass-card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
@@ -67,10 +84,40 @@
             opacity: 0.5;
         }
 
+        /* Chống kéo thả hình ảnh */
+        img {
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
+            pointer-events: none;
+        }
+        
+        /* Cho phép tương tác với logo và avatar */
+        .allow-interaction img, button img, .cursor-pointer img {
+            pointer-events: auto !important;
+        }
+
         .ql-container { border-bottom-left-radius: 1.5rem; border-bottom-right-radius: 1.5rem; font-family: 'Inter', sans-serif !important; border-color: #f3f4f6 !important; }
         .ql-toolbar { border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem; border-color: #f3f4f6 !important; background: #f9fafb; padding: 1rem !important; }
         .dark .ql-toolbar { background: #111827; border-color: #374151 !important; }
         .dark .ql-container { border-color: #374151 !important; }
+
+        /* Lớp phủ Watermark ẩn bảo vệ bản quyền */
+        .security-watermark::after {
+            content: "Copyright by PHẠM HOÀI VŨ - phamhoaivu.vercel.app";
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            opacity: 0.05;
+            font-size: 10px;
+            font-weight: bold;
+            z-index: 9999;
+            pointer-events: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
     </style>
 <script type="importmap">
 {
@@ -86,7 +133,7 @@
 }
 </script>
 </head>
-<body class="bg-sky-50 dark:bg-slate-950 transition-colors duration-200">
+<body class="bg-sky-50 dark:bg-slate-950 transition-colors duration-200 security-watermark">
     <canvas id="snow-canvas"></canvas>
     
     <div id="root"></div>
@@ -150,6 +197,29 @@
                 document.head.appendChild(fragment);
             }
         });
+
+        // 1. Chặn chuột phải
+        document.addEventListener('contextmenu', e => e.preventDefault());
+
+        // 2. Chặn các phím tắt kiểm tra mã nguồn
+        document.onkeydown = function(e) {
+            if (
+                e.keyCode === 123 || // F12
+                (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || // Ctrl+Shift+I/J
+                (e.ctrlKey && e.keyCode === 85) || // Ctrl+U
+                (e.ctrlKey && e.keyCode === 83) || // Ctrl+S (Chặn lưu trang)
+                (e.ctrlKey && e.keyCode === 80)    // Ctrl+P (Chặn in trang)
+            ) {
+                return false;
+            }
+        };
+
+        // 3. Bảo mật Console: Tự động xóa log nếu mở được DevTools
+        setInterval(() => {
+            console.clear();
+            console.log("%cPHẠM HOÀI VŨ BLOG - HỆ THỐNG BẢO MẬT", "color: red; font-size: 24px; font-weight: bold;");
+            console.log("%cVui lòng không can thiệp vào mã nguồn. Mọi hành vi sao chép sẽ bị báo cáo bản quyền.", "color: blue; font-size: 14px;");
+        }, 2000);
     </script>
 </body>
 </html>
