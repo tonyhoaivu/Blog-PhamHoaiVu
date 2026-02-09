@@ -15,7 +15,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin, navigateTo }) => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [forgotPasswordMode, setForgotPasswordMode] = useState(false);
-  const [forgotEmail, setForgotEmail] = useState('');
 
   useEffect(() => {
     const savedUser = localStorage.getItem('phv_remembered_user');
@@ -33,7 +32,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin, navigateTo }) => {
     setError('');
 
     const ADMIN_USER = "admin";
-    const ADMIN_PASSWORD = "0927099940@Phv";
+    const ADMIN_PASSWORD = "092709940@Phv"; // Cập nhật mật khẩu đúng
 
     setTimeout(() => {
       if (username.trim() === ADMIN_USER && password === ADMIN_PASSWORD) {
@@ -63,21 +62,21 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin, navigateTo }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <h2 className="text-2xl font-black text-white uppercase tracking-tighter">ĐĂNG NHẬP ADMIN</h2>
-            <p className="text-sky-100 text-[10px] font-bold uppercase tracking-[3px] mt-1">Phạm Hoài Vũ Blog Premium</p>
+            <h2 className="text-2xl font-black text-white uppercase tracking-tighter">ĐĂNG NHẬP QUẢN TRỊ</h2>
+            <p className="text-sky-100 text-[10px] font-bold uppercase tracking-[3px] mt-1">Phạm Hoài Vũ Blog Premium CMS</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="p-10 space-y-6">
           {error && (
-            <div className="p-4 bg-red-50 text-red-600 text-[11px] font-black rounded-xl border border-red-100 text-center uppercase tracking-wider animate-shake">
+            <div className="p-4 bg-red-50 text-red-600 text-[11px] font-black rounded-xl border border-red-100 text-center uppercase tracking-wider">
               ⚠️ {error}
             </div>
           )}
 
           <div className="space-y-5">
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Tài khoản quản trị</label>
+              <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Tài khoản</label>
               <input 
                 type="text" 
                 required
@@ -101,7 +100,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin, navigateTo }) => {
                 <button 
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-sky-400"
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-sky-400 font-bold text-xs"
                 >
                   {showPassword ? "ẨN" : "HIỆN"}
                 </button>
@@ -133,7 +132,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin, navigateTo }) => {
             disabled={isLoading}
             className="w-full bg-sky-600 hover:bg-sky-700 disabled:bg-slate-300 text-white py-5 rounded-2xl font-black uppercase tracking-widest shadow-2xl shadow-sky-600/30 transition-all active:scale-95"
           >
-            {isLoading ? "ĐANG ĐĂNG NHẬP..." : "XÁC NHẬN"}
+            {isLoading ? "ĐANG ĐĂNG NHẬP..." : "XÁC NHẬN ĐĂNG NHẬP"}
           </button>
         </form>
       </div>
