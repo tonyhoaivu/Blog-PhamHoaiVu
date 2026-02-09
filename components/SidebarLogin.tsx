@@ -13,12 +13,9 @@ const SidebarLogin: React.FC<SidebarLoginProps> = ({ currentUser, onLogin, onLog
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [mode, setMode] = useState<'login' | 'forgot'>('login');
-  const [forgotEmail, setForgotEmail] = useState('');
-  const [isSent, setIsSent] = useState(false);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('phv_remembered_user');
@@ -26,9 +23,16 @@ const SidebarLogin: React.FC<SidebarLoginProps> = ({ currentUser, onLogin, onLog
     if (savedUser && savedPass) {
       setUsername(savedUser);
       setPassword(savedPass);
-      setRememberMe(true);
     }
   }, []);
+
+  const handleSocialLogin = (platform: 'google' | 'facebook') => {
+    setIsLoading(true);
+    setTimeout(() => {
+      onLogin({ email: `tony_${platform}@gmail.com`, role: 'user' });
+      setIsLoading(false);
+    }, 1200);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,9 +47,6 @@ const SidebarLogin: React.FC<SidebarLoginProps> = ({ currentUser, onLogin, onLog
         if (rememberMe) {
           localStorage.setItem('phv_remembered_user', username.trim());
           localStorage.setItem('phv_remembered_pass', password);
-        } else {
-          localStorage.removeItem('phv_remembered_user');
-          localStorage.removeItem('phv_remembered_pass');
         }
         onLogin({ email: username.trim(), role: 'admin' });
       } else {
@@ -55,150 +56,84 @@ const SidebarLogin: React.FC<SidebarLoginProps> = ({ currentUser, onLogin, onLog
     }, 1000);
   };
 
-  const handleForgot = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsSent(true);
-      setTimeout(() => {
-        setIsSent(false);
-        setMode('login');
-      }, 3000);
-    }, 1500);
-  };
-
   if (currentUser) {
     return (
-      <div className="bg-white rounded-[2rem] p-8 shadow-xl shadow-sky-500/5 border border-sky-50">
+      <div className="bg-white rounded-[2rem] p-8 shadow-xl border border-sky-50">
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-12 h-12 rounded-full bg-sky-600 text-white flex items-center justify-center font-black text-xl shadow-lg">
+          <div className="w-12 h-12 rounded-full bg-sky-600 text-white flex items-center justify-center font-black text-xl shadow-lg shadow-sky-500/20">
             {currentUser.email[0].toUpperCase()}
           </div>
           <div className="overflow-hidden">
-            <p className="text-[10px] font-black text-sky-600 uppercase tracking-widest">Administrator</p>
+            <p className="text-[10px] font-black text-sky-600 uppercase tracking-widest">{currentUser.role === 'admin' ? 'Administrator' : 'Verified User'}</p>
             <p className="text-sm font-black text-slate-900 truncate">{currentUser.email}</p>
           </div>
         </div>
         <div className="space-y-3">
-          <button onClick={() => navigateTo(Page.ADMIN)} className="w-full bg-sky-600 text-white py-3 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-sky-700 shadow-md transition-all">QUẢN TRỊ</button>
-          <button onClick={onLogout} className="w-full bg-slate-100 text-slate-500 py-3 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-red-50 hover:text-red-600 transition-all">THOÁT</button>
+          {currentUser.role === 'admin' && (
+            <button onClick={() => navigateTo(Page.ADMIN)} className="w-full bg-sky-600 text-white py-3 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-sky-700 shadow-md transition-all">DASHBOARD</button>
+          )}
+          <button onClick={onLogout} className="w-full bg-slate-100 text-slate-500 py-3 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-red-50 hover:text-red-600 transition-all">THOÁT TÀI KHOẢN</button>
         </div>
-      </div>
-    );
-  }
-
-  if (mode === 'forgot') {
-    return (
-      <div className="bg-white rounded-[2rem] p-8 shadow-xl shadow-sky-500/5 border border-sky-50 animate-in fade-in zoom-in duration-300">
-        <h3 className="text-[11px] font-black mb-6 flex items-center gap-2 text-slate-900 uppercase tracking-[3px]">
-          <span className="w-1.5 h-6 bg-sky-600 rounded-full"></span>
-          QUÊN MẬT KHẨU
-        </h3>
-        {isSent ? (
-          <div className="text-center py-4 space-y-3">
-            <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/></svg>
-            </div>
-            <p className="text-[10px] font-black text-gray-500 uppercase">Đã gửi liên kết khôi phục!</p>
-          </div>
-        ) : (
-          <form onSubmit={handleForgot} className="space-y-4">
-            <p className="text-[10px] text-gray-400 font-bold leading-relaxed uppercase">Nhập Gmail Admin để nhận mã khôi phục mật khẩu.</p>
-            <input 
-              type="email" 
-              placeholder="Email admin..." 
-              value={forgotEmail}
-              onChange={(e) => setForgotEmail(e.target.value)}
-              className="w-full px-5 py-4 rounded-xl bg-sky-50/50 border-2 border-transparent focus:border-sky-600 outline-none text-[12px] font-bold transition-all"
-              required
-            />
-            <button 
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-sky-600 text-white py-4 rounded-xl font-black text-[11px] uppercase tracking-widest shadow-lg shadow-sky-500/20 active:scale-95 transition-all"
-            >
-              {isLoading ? "ĐANG GỬI..." : "GỬI Gmail"}
-            </button>
-            <button 
-              type="button"
-              onClick={() => setMode('login')}
-              className="w-full text-[10px] font-black text-gray-400 hover:text-sky-600 uppercase tracking-widest"
-            >
-              QUAY LẠI
-            </button>
-          </form>
-        )}
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-[2rem] p-8 shadow-xl shadow-sky-500/5 border border-sky-50 animate-in fade-in duration-300">
+    <div className="bg-white rounded-[2rem] p-8 shadow-xl border border-sky-50 animate-in fade-in duration-300">
       <h3 className="text-[11px] font-black mb-6 flex items-center gap-2 text-slate-900 uppercase tracking-[3px]">
         <span className="w-1.5 h-6 bg-sky-600 rounded-full"></span>
-        ĐĂNG NHẬP
+        ĐĂNG NHẬP NHANH
       </h3>
+
+      <div className="space-y-3 mb-6">
+        <button 
+          onClick={() => handleSocialLogin('google')}
+          disabled={isLoading}
+          className="w-full flex items-center justify-center gap-3 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition shadow-sm"
+        >
+          <img src="https://www.google.com/favicon.ico" className="w-4 h-4" alt="G" />
+          <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">Google Login</span>
+        </button>
+        <button 
+          onClick={() => handleSocialLogin('facebook')}
+          disabled={isLoading}
+          className="w-full flex items-center justify-center gap-3 py-3 bg-[#1877F2] text-white rounded-xl hover:bg-blue-700 transition shadow-sm"
+        >
+          <span className="text-[10px] font-black uppercase tracking-widest">Facebook Login</span>
+        </button>
+      </div>
+
+      <div className="relative flex items-center gap-4 mb-6 opacity-20">
+        <div className="flex-grow h-px bg-slate-900"></div>
+        <span className="text-[10px] font-black uppercase">Admin</span>
+        <div className="flex-grow h-px bg-slate-900"></div>
+      </div>
+
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-3">
+        <input 
+          type="text" 
+          placeholder="Tài khoản..." 
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className={`w-full px-5 py-3.5 rounded-xl bg-slate-50 border-2 ${error ? 'border-red-500' : 'border-transparent'} focus:border-sky-600 outline-none text-[12px] font-bold shadow-inner`}
+          required
+        />
+        <div className="relative">
           <input 
-            type="text" 
-            placeholder="Tài khoản..." 
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className={`w-full px-5 py-4 rounded-xl bg-sky-50/50 border-2 ${error ? 'border-red-500' : 'border-transparent'} focus:border-sky-600 outline-none text-[12px] font-bold transition-all`}
+            type={showPassword ? "text" : "password"} 
+            placeholder="Mật khẩu..." 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={`w-full px-5 py-3.5 rounded-xl bg-slate-50 border-2 ${error ? 'border-red-500' : 'border-transparent'} focus:border-sky-600 outline-none text-[12px] font-bold shadow-inner`}
             required
           />
-          <div className="relative">
-            <input 
-              type={showPassword ? "text" : "password"} 
-              placeholder="Mật khẩu..." 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={`w-full px-5 py-4 rounded-xl bg-sky-50/50 border-2 ${error ? 'border-red-500' : 'border-transparent'} focus:border-sky-600 outline-none text-[12px] font-bold transition-all`}
-              required
-            />
-            <button 
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-sky-400 hover:text-sky-600 transition-colors"
-            >
-              {showPassword ? (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-              ) : (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
-              )}
-            </button>
-          </div>
         </div>
-
-        <div className="flex items-center justify-between px-1">
-          <label className="flex items-center gap-2 cursor-pointer group">
-            <input 
-              type="checkbox" 
-              checked={rememberMe} 
-              onChange={(e) => setRememberMe(e.target.checked)}
-              className="w-4 h-4 rounded border-sky-300 text-sky-600 focus:ring-sky-500 transition-all" 
-            />
-            <span className="text-[10px] font-black text-gray-400 group-hover:text-sky-600 uppercase tracking-tight">Ghi nhớ</span>
-          </label>
-          <button 
-            type="button" 
-            onClick={() => setMode('forgot')}
-            className="text-[10px] font-black text-sky-600 hover:underline uppercase tracking-tight"
-          >
-            Quên mật khẩu?
-          </button>
-        </div>
-        
-        {error && <p className="text-[10px] font-black text-red-600 text-center uppercase tracking-wider animate-shake">Sai thông tin!</p>}
-
         <button 
           type="submit"
           disabled={isLoading}
-          className="w-full bg-sky-600 text-white py-4 rounded-xl font-black text-[11px] uppercase tracking-widest shadow-lg shadow-sky-500/20 active:scale-95 transition-all"
+          className="w-full bg-slate-900 text-white py-4 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-black shadow-lg transition-all"
         >
-          {isLoading ? "ĐANG ĐĂNG NHẬP..." : "XÁC NHẬN"}
+          {isLoading ? "ĐANG XÁC THỰC..." : "ĐĂNG NHẬP"}
         </button>
       </form>
     </div>
